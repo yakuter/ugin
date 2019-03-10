@@ -23,13 +23,13 @@ func main() {
 	router := gin.Default()
 	router.Use(include.CORS())
 
-	v1 := router.Group("/v1")
+	posts := router.Group("/posts")
 	{
-		v1.GET("/", controller.GetPosts)
-		v1.GET("/:id", controller.GetPost)
-		v1.POST("/", controller.CreatePost)
-		v1.PUT("/:id", controller.UpdatePost)
-		v1.DELETE("/:id", controller.DeletePost)
+		posts.GET("/", controller.GetPosts)
+		posts.GET("/:id", controller.GetPost)
+		posts.POST("/", controller.CreatePost)
+		posts.PUT("/:id", controller.UpdatePost)
+		posts.DELETE("/:id", controller.DeletePost)
 	}
 
 	router.Run(":" + config.Server.Port)
