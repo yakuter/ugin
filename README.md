@@ -2,7 +2,7 @@
 UGin is an API boilerplate written in Go (Golang) with Gin Framework. https://www.yakuter.com/
 
 ### Dependencies
-Bu uygulamada **Gin Web Framework** ile **Gorm ORM Kütüphanesi** kullanılmaktadır.
+**UGin** uses **Gin** for main framework, **Gorm** for database and **Viper** for configuration.
 ```
 go get -u github.com/gin-gonic/gin
 go get -u github.com/jinzhu/gorm
