@@ -33,10 +33,10 @@ router.Use(include.CORS())
 There is also a good repo for this: https://github.com/gin-contrib/cors
 
 ## Default Endpoints
-| Method | URI         | Function         |
-|--------|-------------|------------------|
-| GET    | /posts/     | main.GetPosts    |
-| POST   | /posts/     | main.CreatePost  |
-| GET    | /posts/:id  | main.GetPost     |
-| PUT    | /posts/:id  | main.UpdatePost  |
-| DELETE | /posts/:id  | main.DeletePost  |
+| Method | URI         | Function               |
+|--------|-------------|------------------------|
+| GET    | /posts/     | controller.GetPosts    |
+| POST   | /posts/     | controller.CreatePost  |
+| GET    | /posts/:id  | controller.GetPost     |
+| PUT    | /posts/:id  | controller.UpdatePost  |
+| DELETE | /posts/:id  | controller.DeletePost  |
