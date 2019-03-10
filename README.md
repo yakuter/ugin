@@ -13,7 +13,7 @@ go get -u github.com/spf13/viper
 ```
 
 ### Default Endpoints
-| Method | URI         | Fonksiyon        |
+| Method | URI         | Function         |
 |--------|-------------|------------------|
 | GET    | /posts/     | main.GetPosts    |
 | POST   | /posts/     | main.CreatePost  |
