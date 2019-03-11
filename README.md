@@ -44,6 +44,8 @@ authorized := router.Group("/admin", gin.BasicAuth(gin.Accounts{
 authorized.GET("/dashboard", controller.Dashboard)
 ```
 
+If you want to use JWT for authorization in UGin, you can check this: https://github.com/appleboy/gin-jwt
+
 ## Default Endpoints
 | Method | URI              | Function               |
 |--------|------------------|------------------------|
