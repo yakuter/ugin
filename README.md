@@ -32,11 +32,24 @@ router.Use(include.CORS())
 ```
 There is also a good repo for this: https://github.com/gin-contrib/cors
 
+### BasicAuth Middleware
+Almost every API needs a protected area. Gin has **BasicAuth** middleware for protecting routes. Basic Auth is an authorization type that requires a verified username and password to access a data resource. In UGin, you can find an example for a basic auth. To access these protected routes, you need to add **Basic Authorization credentials** in your requests. If you try to reach these endpoints from browser, you should see a window prompting you for username and password.
+
+```
+authorized := router.Group("/admin", gin.BasicAuth(gin.Accounts{
+    "username": "password",
+}))
+
+// /admin/dashboard endpoint is now protected
+authorized.GET("/dashboard", controller.Dashboard)
+```
+
 ## Default Endpoints
-| Method | URI         | Function               |
-|--------|-------------|------------------------|
-| GET    | /posts/     | controller.GetPosts    |
-| POST   | /posts/     | controller.CreatePost  |
-| GET    | /posts/:id  | controller.GetPost     |
-| PUT    | /posts/:id  | controller.UpdatePost  |
-| DELETE | /posts/:id  | controller.DeletePost  |
+| Method | URI              | Function               |
+|--------|------------------|------------------------|
+| GET    | /posts/          | controller.GetPosts    |
+| POST   | /posts/          | controller.CreatePost  |
+| GET    | /posts/:id       | controller.GetPost     |
+| PUT    | /posts/:id       | controller.UpdatePost  |
+| DELETE | /posts/:id       | controller.DeletePost  |
+| GET    | /admin/dashboard | controller.Dashboard   |

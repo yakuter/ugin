@@ -23,6 +23,7 @@ func main() {
 	router := gin.Default()
 	router.Use(include.CORS())
 
+	// Non-protected routes
 	posts := router.Group("/posts")
 	{
 		posts.GET("/", controller.GetPosts)
@@ -31,6 +32,18 @@ func main() {
 		posts.PUT("/:id", controller.UpdatePost)
 		posts.DELETE("/:id", controller.DeletePost)
 	}
+
+	// Protected routes
+	// For authorized access, group protected routes using gin.BasicAuth() middleware
+	// gin.Accounts is a shortcut for map[string]string
+	authorized := router.Group("/admin", gin.BasicAuth(gin.Accounts{
+		"username1": "password1",
+		"username2": "password2",
+		"username3": "password3",
+	}))
+
+	// /admin/dashboard endpoint is now protected
+	authorized.GET("/dashboard", controller.Dashboard)
 
 	router.Run(":" + config.Server.Port)
 }
