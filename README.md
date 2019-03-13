@@ -1,6 +1,20 @@
 # UGin - Ultimate Gin API
 UGin is an API boilerplate written in Go (Golang) with Gin Framework. https://www.yakuter.com/
 
+## Database Support
+UGin uses **gorm** as an ORM. So **Sqlite3**, **MySQL** and **PostgreSQL** is supported. You just need to edit **config.yml** file according to your setup. 
+
+**config.yml** content:
+```
+database:
+  driver: "postgres"
+  dbname: "database_name"
+  username: "user"
+  password: "password"
+  host: "localhost"
+  port: "5432"
+```
+
 ## Dependencies
 **UGin** uses **Gin** for main framework, **Gorm** for database and **Viper** for configuration.
 ```
@@ -13,7 +27,7 @@ go get -u github.com/spf13/viper
 ```
 ## Middlewares
 ### 1. Logger and Recovery Middlewares
-Gin has 2 important built-in middlewares: Logger and Recovery. UGin calls these two with the followıng code.
+Gin has 2 important built-in middlewares: **Logger** and **Recovery**. UGin calls these two in default.
 ```
 router := gin.Default()
 ```

@@ -47,7 +47,7 @@ func InitDB() *gorm.DB {
 
 	} else if driver == "mysql" {
 
-		db, err = gorm.Open("mysql", username+":"+username+"@/"+database+"?charset=utf8&parseTime=True&loc=Local")
+		db, err = gorm.Open("mysql", username+":"+password+"@tcp("+host+":"+port+")/"+database+"?charset=utf8&parseTime=True&loc=Local")
 		if err != nil {
 			fmt.Println("db err: ", err)
 		}

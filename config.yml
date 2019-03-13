@@ -1,5 +1,5 @@
 database:
-  driver: "sqlite"
+  driver: "postgres"
   dbname: "database_name"
   username: "user"
   password: "password"
