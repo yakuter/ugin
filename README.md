@@ -15,6 +15,20 @@ database:
   port: "5432"
 ```
 
+## Filtering, Search and Pagination
+With UGin, anything you need for an API is ready. If you need a filter, search and paginate for the results, you just need to use the parameters below:
+
+Endpoint: /posts/
+
+**Query parameters:**
+limit=2
+offset=0
+name=Third
+description=My
+order=name|asc
+
+Full: **http://localhost:8081/posts/?limit=2&offset=0&name=Third&description=My&order=name|asc**
+
 ## Dependencies
 **UGin** uses **Gin** for main framework, **Gorm** for database and **Viper** for configuration.
 ```

@@ -2,6 +2,8 @@ package controller
 
 import (
 	"fmt"
+	"strconv"
+	"strings"
 
 	"ugin/include"
 	"ugin/model"
@@ -15,6 +17,12 @@ var err error
 
 // Post struct alias
 type Post = model.Post
+
+// Data is mainle generated for filtering and pagination
+type Data struct {
+	Total int64
+	Data  []Post
+}
 
 func GetPost(c *gin.Context) {
 	db = include.GetDB()
@@ -32,12 +40,55 @@ func GetPost(c *gin.Context) {
 func GetPosts(c *gin.Context) {
 	db = include.GetDB()
 	var posts []Post
+	var data Data
+	var count int64
 
-	if err := db.Find(&posts).Error; err != nil {
+	name := c.DefaultQuery("name", "")
+	description := c.DefaultQuery("description", "")
+
+	Sort := c.DefaultQuery("order", "id|desc")
+	SortArray := strings.Split(Sort, "|")
+
+	offset := c.Query("offset")
+	offsetInt, err := strconv.Atoi(offset)
+	if err != nil {
+		offsetInt = 0
+	}
+
+	limit := c.Query("limit")
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		limitInt = 25
+	}
+
+	query := db.Limit(limitInt)
+	query = query.Offset(offsetInt)
+	query = query.Order(SortArray[0] + " " + SortArray[1])
+
+	// In postgres you shoud use ILIKE to make search case insensitive
+	if "name" != "" {
+		query = query.Where("name LIKE ?", "%"+name+"%")
+	}
+
+	if "description" != "" {
+		query = query.Where("description LIKE ?", "%"+description+"%")
+	}
+
+	if err := query.Find(&posts).Error; err != nil {
 		c.AbortWithStatus(404)
 		fmt.Println(err)
 	} else {
-		c.JSON(200, posts)
+
+		// We are resetting offset to 0 to return total number.
+		// This is a fix for Gorm offset issue
+		offsetInt = 0
+		query = query.Offset(offsetInt)
+		query.Table("posts").Count(&count)
+
+		data.Total = count
+		data.Data = posts
+
+		c.JSON(200, data)
 	}
 }
 
