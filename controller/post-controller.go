@@ -43,18 +43,24 @@ func GetPosts(c *gin.Context) {
 	var data Data
 	var count int64
 
+	//Get name from query
 	name := c.DefaultQuery("name", "")
+
+	//Get description from query
 	description := c.DefaultQuery("description", "")
 
+	// Order By filtering option add
 	Sort := c.DefaultQuery("order", "id|desc")
 	SortArray := strings.Split(Sort, "|")
 
+	// Define and get offset for pagination
 	offset := c.Query("offset")
 	offsetInt, err := strconv.Atoi(offset)
 	if err != nil {
 		offsetInt = 0
 	}
 
+	// Define and get limit for pagination
 	limit := c.Query("limit")
 	limitInt, err := strconv.Atoi(limit)
 	if err != nil {
