@@ -16,15 +16,15 @@ database:
 ```
 
 ## Filtering, Search and Pagination
-With UGin, anything you need for an API is ready. If you need a filter, search and paginate for the results, you just need to use the parameters below:
+UGin has it's own filtering, search and pagination system. You just need to use these parameters.
 
 **Query parameters:**
 ```
-limit=2
-offset=0
-name=Third
-description=My
-order=name|asc
+/posts/?limit=2
+/posts/?offset=0
+/posts/?name=Third
+/posts/?description=My
+/posts/?order=name|asc
 ```
 
 Full: **http://localhost:8081/posts/?limit=2&offset=0&name=Third&description=My&order=name|asc**
