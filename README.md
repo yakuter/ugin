@@ -16,7 +16,7 @@ database:
 ```
 
 ## Default Models
-UGin has two models (Post and Tag) as boilerplate to show relational database useage.
+UGin has two models (Post and Tag) as boilerplate to show relational database usage.
 
 **/model/post-model.go** content:
 ```
@@ -33,15 +33,6 @@ type Tag struct {
 	Name        string `json:"Name" gorm:"type:varchar(255)"`
 	Description string `json:"Description" gorm:"type:text"`
 }
-```
-
-**Query parameters:**
-```
-/posts/?limit=2
-/posts/?offset=0
-/posts/?name=Third
-/posts/?description=My
-/posts/?order=name|asc
 ```
 
 ## Filtering, Search and Pagination
