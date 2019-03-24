@@ -18,7 +18,7 @@ func main() {
 
 	db = include.InitDB()
 	defer db.Close()
-	db.AutoMigrate(&model.Post{})
+	db.AutoMigrate(&model.Post{}, &model.Tag{})
 
 	router := gin.Default()
 	router.Use(include.CORS())

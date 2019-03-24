@@ -54,6 +54,7 @@ func InitDB() *gorm.DB {
 
 	}
 
+	db.LogMode(true)
 	DB = db
 
 	return DB

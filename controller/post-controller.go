@@ -18,6 +18,9 @@ var err error
 // Post struct alias
 type Post = model.Post
 
+// Tag struct alias
+type Tag = model.Tag
+
 // Data is mainle generated for filtering and pagination
 type Data struct {
 	Total int64
@@ -28,11 +31,19 @@ func GetPost(c *gin.Context) {
 	db = include.GetDB()
 	id := c.Params.ByName("id")
 	var post Post
+	var tags []Tag
 
 	if err := db.Where("id = ? ", id).First(&post).Error; err != nil {
+
 		c.AbortWithStatus(404)
 		fmt.Println(err)
+
 	} else {
+
+		db.Model(&post).Related(&tags)
+		// SELECT * FROM "tags"  WHERE ("post_id" = 1)
+
+		post.Tags = tags
 		c.JSON(200, post)
 	}
 }

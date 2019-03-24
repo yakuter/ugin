@@ -15,6 +15,35 @@ database:
   port: "5432"
 ```
 
+## Default Models
+UGin has two models (Post and Tag) as boilerplate to show relational database useage.
+
+**/model/post-model.go** content:
+```
+type Post struct {
+	gorm.Model
+	Name        string `json:"Name" gorm:"type:varchar(255)"`
+	Description string `json:"Description"  gorm:"type:text"`
+	Tags        []Tag  // One-To-Many relationship (has many - use Tag's UserID as foreign key)
+}
+
+type Tag struct {
+	gorm.Model
+	PostID      uint   `gorm:"index"` // Foreign key (belongs to)
+	Name        string `json:"Name" gorm:"type:varchar(255)"`
+	Description string `json:"Description" gorm:"type:text"`
+}
+```
+
+**Query parameters:**
+```
+/posts/?limit=2
+/posts/?offset=0
+/posts/?name=Third
+/posts/?description=My
+/posts/?order=name|asc
+```
+
 ## Filtering, Search and Pagination
 UGin has it's own filtering, search and pagination system. You just need to use these parameters.
 
