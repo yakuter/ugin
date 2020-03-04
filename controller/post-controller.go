@@ -2,8 +2,7 @@ package controller
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
+	"log"
 
 	"ugin/include"
 	"ugin/model"
@@ -23,8 +22,9 @@ type Tag = model.Tag
 
 // Data is mainle generated for filtering and pagination
 type Data struct {
-	Total int64
-	Data  []Post
+	TotalData    int64
+	FilteredData int64
+	Data         []Post
 }
 
 func GetPost(c *gin.Context) {
@@ -52,57 +52,43 @@ func GetPosts(c *gin.Context) {
 	db = include.GetDB()
 	var posts []Post
 	var data Data
-	var count int64
 
-	//Get name from query
-	name := c.DefaultQuery("name", "")
+	// Define and get sorting field
+	sort := c.DefaultQuery("Sort", "ID")
 
-	//Get description from query
-	description := c.DefaultQuery("description", "")
-
-	// Order By filtering option add
-	Sort := c.DefaultQuery("order", "id|desc")
-	SortArray := strings.Split(Sort, "|")
+	// Define and get sorting order field
+	order := c.DefaultQuery("Order", "DESC")
 
 	// Define and get offset for pagination
-	offset := c.Query("offset")
-	offsetInt, err := strconv.Atoi(offset)
-	if err != nil {
-		offsetInt = 0
-	}
+	offset := c.DefaultQuery("Offset", "0")
 
 	// Define and get limit for pagination
-	limit := c.Query("limit")
-	limitInt, err := strconv.Atoi(limit)
-	if err != nil {
-		limitInt = 25
-	}
+	limit := c.DefaultQuery("Limit", "25")
 
-	query := db.Limit(limitInt)
-	query = query.Offset(offsetInt)
-	query = query.Order(SortArray[0] + " " + SortArray[1])
+	// Get search keyword for Search Scope
+	search := c.DefaultQuery("Search", "")
 
-	// In postgres you shoud use ILIKE to make search case insensitive
-	if "name" != "" {
-		query = query.Where("name LIKE ?", "%"+name+"%")
-	}
-
-	if "description" != "" {
-		query = query.Where("description LIKE ?", "%"+description+"%")
-	}
+	table := "posts"
+	query := db.Select(table + ".*")
+	query = query.Offset(Offset(offset))
+	query = query.Limit(Limit(limit))
+	query = query.Order(SortOrder(table, sort, order))
+	query = query.Scopes(Search(search))
 
 	if err := query.Find(&posts).Error; err != nil {
 		c.AbortWithStatus(404)
-		fmt.Println(err)
+		log.Println(err)
 	} else {
-
+		// Count filtered table
 		// We are resetting offset to 0 to return total number.
 		// This is a fix for Gorm offset issue
-		offsetInt = 0
-		query = query.Offset(offsetInt)
-		query.Table("posts").Count(&count)
+		query = query.Offset(0)
+		query.Table(table).Count(&data.FilteredData)
 
-		data.Total = count
+		// Count total table
+		db.Table(table).Count(&data.TotalData)
+
+		// Set Data result
 		data.Data = posts
 
 		c.JSON(200, data)

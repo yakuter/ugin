@@ -40,11 +40,11 @@ UGin has it's own filtering, search and pagination system. You just need to use 
 
 **Query parameters:**
 ```
-/posts/?limit=2
-/posts/?offset=0
-/posts/?name=Third
-/posts/?description=My
-/posts/?order=name|asc
+/posts/?Limit=2
+/posts/?Offset=0
+/posts/?Sort=ID
+/posts/?Order=DESC
+/posts/?Search=hello
 ```
 
 Full: **http://localhost:8081/posts/?limit=2&offset=0&name=Third&description=My&order=name|asc**
