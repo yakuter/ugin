@@ -47,7 +47,7 @@ UGin has it's own filtering, search and pagination system. You just need to use 
 /posts/?Search=hello
 ```
 
-Full: **http://localhost:8081/posts/?limit=2&offset=0&name=Third&description=My&order=name|asc**
+Full: **http://localhost:8081/posts/?Limit=25&Offset=0&Sort=ID&Order=DESC&Search=hello**
 
 ## Dependencies
 **UGin** uses **Gin** for main framework, **Gorm** for database and **Viper** for configuration.
