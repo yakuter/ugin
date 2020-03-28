@@ -34,18 +34,17 @@ func GetPost(c *gin.Context) {
 	var tags []Tag
 
 	if err := db.Where("id = ? ", id).First(&post).Error; err != nil {
-
+		log.Println(err)
 		c.AbortWithStatus(404)
-		fmt.Println(err)
+		return
 
-	} else {
-
-		db.Model(&post).Related(&tags)
-		// SELECT * FROM "tags"  WHERE ("post_id" = 1)
-
-		post.Tags = tags
-		c.JSON(200, post)
 	}
+
+	db.Model(&post).Related(&tags)
+	// SELECT * FROM "tags"  WHERE ("post_id" = 1)
+
+	post.Tags = tags
+	c.JSON(200, post)
 }
 
 func GetPosts(c *gin.Context) {
@@ -76,23 +75,23 @@ func GetPosts(c *gin.Context) {
 	query = query.Scopes(Search(search))
 
 	if err := query.Find(&posts).Error; err != nil {
-		c.AbortWithStatus(404)
 		log.Println(err)
-	} else {
-		// Count filtered table
-		// We are resetting offset to 0 to return total number.
-		// This is a fix for Gorm offset issue
-		query = query.Offset(0)
-		query.Table(table).Count(&data.FilteredData)
-
-		// Count total table
-		db.Table(table).Count(&data.TotalData)
-
-		// Set Data result
-		data.Data = posts
-
-		c.JSON(200, data)
+		c.AbortWithStatus(404)
+		return
 	}
+	// Count filtered table
+	// We are resetting offset to 0 to return total number.
+	// This is a fix for Gorm offset issue
+	query = query.Offset(0)
+	query.Table(table).Count(&data.FilteredData)
+
+	// Count total table
+	db.Table(table).Count(&data.TotalData)
+
+	// Set Data result
+	data.Data = posts
+
+	c.JSON(200, data)
 }
 
 func CreatePost(c *gin.Context) {
@@ -102,11 +101,12 @@ func CreatePost(c *gin.Context) {
 	c.BindJSON(&post)
 
 	if err := db.Create(&post).Error; err != nil {
-		c.AbortWithStatus(404)
 		fmt.Println(err)
-	} else {
-		c.JSON(200, post)
+		c.AbortWithStatus(404)
+		return
 	}
+
+	c.JSON(200, post)
 }
 
 func UpdatePost(c *gin.Context) {
@@ -115,8 +115,9 @@ func UpdatePost(c *gin.Context) {
 	id := c.Params.ByName("id")
 
 	if err := db.Where("id = ?", id).First(&post).Error; err != nil {
+		log.Println(err)
 		c.AbortWithStatus(404)
-		fmt.Println(err)
+		return
 	}
 
 	c.BindJSON(&post)
@@ -131,9 +132,10 @@ func DeletePost(c *gin.Context) {
 	var post Post
 
 	if err := db.Where("id = ? ", id).Delete(&post).Error; err != nil {
+		log.Println(err)
 		c.AbortWithStatus(404)
-		fmt.Println(err)
-	} else {
-		c.JSON(200, gin.H{"id#" + id: "deleted"})
+		return
 	}
+
+	c.JSON(200, gin.H{"id#" + id: "deleted"})
 }
