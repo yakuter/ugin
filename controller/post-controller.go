@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"ugin/include"
 	"ugin/model"
+	"ugin/pkg/database"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -28,7 +28,7 @@ type Data struct {
 }
 
 func GetPost(c *gin.Context) {
-	db = include.GetDB()
+	db = database.GetDB()
 	id := c.Params.ByName("id")
 	var post Post
 	var tags []Tag
@@ -49,7 +49,7 @@ func GetPost(c *gin.Context) {
 }
 
 func GetPosts(c *gin.Context) {
-	db = include.GetDB()
+	db = database.GetDB()
 	var posts []Post
 	var data Data
 
@@ -96,7 +96,7 @@ func GetPosts(c *gin.Context) {
 }
 
 func CreatePost(c *gin.Context) {
-	db = include.GetDB()
+	db = database.GetDB()
 	var post Post
 
 	c.BindJSON(&post)
@@ -110,7 +110,7 @@ func CreatePost(c *gin.Context) {
 }
 
 func UpdatePost(c *gin.Context) {
-	db = include.GetDB()
+	db = database.GetDB()
 	var post Post
 	id := c.Params.ByName("id")
 
@@ -126,7 +126,7 @@ func UpdatePost(c *gin.Context) {
 }
 
 func DeletePost(c *gin.Context) {
-	db = include.GetDB()
+	db = database.GetDB()
 	id := c.Params.ByName("id")
 	var post Post
 

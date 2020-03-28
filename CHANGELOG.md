@@ -1,6 +1,10 @@
 
 # UGIN CHANGELOG
 
+## Version: [1.1.1] (2020-03-28)
+### Changed
+- Moved config, database and middlewares to pkg
+
 ## Version: [1.1.0] (2020-03-04)
 ### Added
 - Helper functions (Limit, Offset, SortOrder)
