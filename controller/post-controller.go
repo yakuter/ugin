@@ -98,7 +98,7 @@ func CreatePost(c *gin.Context) {
 	db = database.GetDB()
 	var post Post
 
-	c.BindJSON(&post)
+	c.ShouldBindJSON(&post)
 
 	if err := db.Create(&post).Error; err != nil {
 		fmt.Println(err)
@@ -120,7 +120,7 @@ func UpdatePost(c *gin.Context) {
 		return
 	}
 
-	c.BindJSON(&post)
+	c.ShouldBindJSON(&post)
 
 	db.Save(&post)
 	c.JSON(200, post)
