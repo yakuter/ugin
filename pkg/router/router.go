@@ -1,8 +1,8 @@
 package router
 
 import (
-	"ugin/controller"
-	"ugin/pkg/middleware"
+	"github.com/yakuter/ugin/controller"
+	"github.com/yakuter/ugin/pkg/middleware"
 
 	"github.com/gin-gonic/gin"
 )

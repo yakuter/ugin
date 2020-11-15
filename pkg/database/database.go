@@ -2,8 +2,8 @@ package database
 
 import (
 	"fmt"
-	"ugin/model"
-	"ugin/pkg/config"
+	"github.com/yakuter/ugin/model"
+	"github.com/yakuter/ugin/pkg/config"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	"ugin/model"
-	"ugin/pkg/database"
+	"github.com/yakuter/ugin/model"
+	"github.com/yakuter/ugin/pkg/database"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
