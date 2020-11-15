@@ -103,8 +103,3 @@ If you want to use JWT for authorization in UGin, you can check this: https://gi
 | PUT    | /posts/:id       | controller.UpdatePost  |
 | DELETE | /posts/:id       | controller.DeletePost  |
 | GET    | /admin/dashboard | controller.Dashboard   |
-
-## Demonstration and Documentation
-I used [gencebay](https://github.com/gencebay)'s great API request and response mock tool [httplive](https://github.com/gencebay/httplive) to show the endpoints and responses of UGin.  So there is a **httplive** folder which is including **httplive.db**. This folder is not necessary for API, you can delete it whenever you want. Just wanted to give you **httplive.db** that can be used in your local httplive installation.
-
-![httplive](https://github.com/yakuter/ugin/blob/461e29c340471acaccb6bd8f6b988939eadadee1/httplive/httplive-screenshot.png)
