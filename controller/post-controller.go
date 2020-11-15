@@ -4,34 +4,24 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/yakuter/ugin/model"
-	"github.com/yakuter/ugin/pkg/database"
-
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
+	"github.com/yakuter/ugin/model"
 )
 
-var db *gorm.DB
 var err error
-
-// Post struct alias
-type Post = model.Post
-
-// Tag struct alias
-type Tag = model.Tag
 
 // Data is mainle generated for filtering and pagination
 type Data struct {
 	TotalData    int64
 	FilteredData int64
-	Data         []Post
+	Data         []model.Post
 }
 
-func GetPost(c *gin.Context) {
-	db = database.GetDB()
+func (base *Controller) GetPost(c *gin.Context) {
+	db := base.DB
 	id := c.Params.ByName("id")
-	var post Post
-	var tags []Tag
+	var post model.Post
+	var tags []model.Tag
 
 	if err := db.Where("id = ? ", id).First(&post).Error; err != nil {
 		log.Println(err)
@@ -47,9 +37,9 @@ func GetPost(c *gin.Context) {
 	c.JSON(200, post)
 }
 
-func GetPosts(c *gin.Context) {
-	db = database.GetDB()
-	var posts []Post
+func (base *Controller) GetPosts(c *gin.Context) {
+	db := base.DB
+	var posts []model.Post
 	var data Data
 
 	// Define and get sorting field
@@ -94,9 +84,9 @@ func GetPosts(c *gin.Context) {
 	c.JSON(200, data)
 }
 
-func CreatePost(c *gin.Context) {
-	db = database.GetDB()
-	var post Post
+func (base *Controller) CreatePost(c *gin.Context) {
+	db := base.DB
+	var post model.Post
 
 	c.ShouldBindJSON(&post)
 
@@ -109,9 +99,9 @@ func CreatePost(c *gin.Context) {
 	c.JSON(200, post)
 }
 
-func UpdatePost(c *gin.Context) {
-	db = database.GetDB()
-	var post Post
+func (base *Controller) UpdatePost(c *gin.Context) {
+	db := base.DB
+	var post model.Post
 	id := c.Params.ByName("id")
 
 	if err := db.Where("id = ?", id).First(&post).Error; err != nil {
@@ -126,10 +116,10 @@ func UpdatePost(c *gin.Context) {
 	c.JSON(200, post)
 }
 
-func DeletePost(c *gin.Context) {
-	db = database.GetDB()
+func (base *Controller) DeletePost(c *gin.Context) {
+	db := base.DB
 	id := c.Params.ByName("id")
-	var post Post
+	var post model.Post
 
 	if err := db.Where("id = ? ", id).Delete(&post).Error; err != nil {
 		log.Println(err)

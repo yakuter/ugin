@@ -1,13 +1,14 @@
 package router
 
 import (
+	"github.com/jinzhu/gorm"
 	"github.com/yakuter/ugin/controller"
 	"github.com/yakuter/ugin/pkg/middleware"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Setup() *gin.Engine {
+func Setup(db *gorm.DB) *gin.Engine {
 	r := gin.New()
 
 	// Middlewares
@@ -15,14 +16,16 @@ func Setup() *gin.Engine {
 	r.Use(gin.Recovery())
 	r.Use(middleware.CORS())
 
+	api := controller.Controller{DB: db}
+
 	// Non-protected routes
 	posts := r.Group("/posts")
 	{
-		posts.GET("/", controller.GetPosts)
-		posts.GET("/:id", controller.GetPost)
-		posts.POST("/", controller.CreatePost)
-		posts.PUT("/:id", controller.UpdatePost)
-		posts.DELETE("/:id", controller.DeletePost)
+		posts.GET("/", api.GetPosts)
+		posts.GET("/:id", api.GetPost)
+		posts.POST("/", api.CreatePost)
+		posts.PUT("/:id", api.UpdatePost)
+		posts.DELETE("/:id", api.DeletePost)
 	}
 
 	// Protected routes
