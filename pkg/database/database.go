@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+
 	"github.com/yakuter/ugin/model"
 	"github.com/yakuter/ugin/pkg/config"
 
@@ -62,7 +63,7 @@ func Setup() {
 	}
 
 	// Change this to true if you want to see SQL queries
-	db.LogMode(false)
+	db.LogMode(true)
 
 	// Auto migrate project models
 	db.AutoMigrate(&model.Post{}, &model.Tag{})

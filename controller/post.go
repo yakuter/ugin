@@ -21,19 +21,15 @@ func (base *Controller) GetPost(c *gin.Context) {
 	db := base.DB
 	id := c.Params.ByName("id")
 	var post model.Post
-	var tags []model.Tag
+	// var tags []model.Tag
 
-	if err := db.Where("id = ? ", id).First(&post).Error; err != nil {
+	if err := db.Where("id = ? ", id).Preload("Tags").First(&post).Error; err != nil {
 		log.Println(err)
 		c.AbortWithStatus(404)
 		return
 
 	}
 
-	db.Model(&post).Related(&tags)
-	// SELECT * FROM "tags"  WHERE ("post_id" = 1)
-
-	post.Tags = tags
 	c.JSON(200, post)
 }
 
@@ -64,7 +60,7 @@ func (base *Controller) GetPosts(c *gin.Context) {
 	query = query.Order(SortOrder(table, sort, order))
 	query = query.Scopes(Search(search))
 
-	if err := query.Find(&posts).Error; err != nil {
+	if err := query.Preload("Tags").Find(&posts).Error; err != nil {
 		log.Println(err)
 		c.AbortWithStatus(404)
 		return
@@ -104,7 +100,7 @@ func (base *Controller) UpdatePost(c *gin.Context) {
 	var post model.Post
 	id := c.Params.ByName("id")
 
-	if err := db.Where("id = ?", id).First(&post).Error; err != nil {
+	if err := db.Where("id = ?", id).Preload("Tags").First(&post).Error; err != nil {
 		log.Println(err)
 		c.AbortWithStatus(404)
 		return
