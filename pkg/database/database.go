@@ -63,7 +63,7 @@ func Setup() {
 	}
 
 	// Change this to true if you want to see SQL queries
-	db.LogMode(true)
+	db.LogMode(config.Database.LogMode)
 
 	// Auto migrate project models
 	db.AutoMigrate(&model.Post{}, &model.Tag{})

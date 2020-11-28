@@ -4,6 +4,21 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// Data is mainle generated for filtering and pagination
+type Data struct {
+	TotalData    int64
+	FilteredData int64
+	Data         []Post
+}
+
+type Args struct {
+	Sort   string
+	Order  string
+	Offset string
+	Limit  string
+	Search string
+}
+
 type Post struct {
 	gorm.Model
 	Name        string `json:"Name" gorm:"type:varchar(255)"`
