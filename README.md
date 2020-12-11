@@ -74,7 +74,7 @@ router.Use(gin.Recovery())
 ```
 
 ### 2. CORS Middleware
-CORS is really important for API's and UGin has it's own CORS middleware in **include/middleware.go**. CORS middleware is called with the code below.
+CORS is important for API's and UGin has it's own CORS middleware in **include/middleware.go**. CORS middleware is called with the code below.
 ```
 router.Use(include.CORS())
 ```
