@@ -103,3 +103,6 @@ If you want to use JWT for authorization in UGin, you can check this: https://gi
 | PUT    | /posts/:id       | controller.UpdatePost  |
 | DELETE | /posts/:id       | controller.DeletePost  |
 | GET    | /admin/dashboard | controller.Dashboard   |
+
+## What is next?
+- Ugin needs a user service and an authentication method with JWT.
