@@ -1,6 +1,20 @@
 package middleware
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+	"net/http"
+	"strings"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"github.com/yakuter/ugin/service"
+)
+
+var (
+	validToken   = "Token is valid"
+	invalidToken = "Token is expired or not valid!"
+	noToken      = "Token could not found! "
+)
 
 // CORS middleware
 func CORS() gin.HandlerFunc {
@@ -14,5 +28,40 @@ func CORS() gin.HandlerFunc {
 			return
 		}
 		c.Next()
+	}
+}
+
+// Authorize middleware
+func Authorize() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var tokenStr string
+		bearerToken := c.GetHeader("Authorization")
+		strArr := strings.Split(bearerToken, " ")
+		if len(strArr) == 2 {
+			tokenStr = strArr[1]
+		}
+
+		if tokenStr == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, noToken)
+			return
+		}
+
+		token, err := service.TokenValid(tokenStr)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, invalidToken)
+			return
+		}
+
+		if err == nil && token.Valid {
+			claims := token.Claims.(jwt.MapClaims)
+			fmt.Println(claims)
+		} else {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"code":    http.StatusUnauthorized,
+				"message": invalidToken,
+				"token":   nil,
+			})
+		}
+
 	}
 }

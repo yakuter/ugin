@@ -28,6 +28,24 @@ func Setup(db *gorm.DB) *gin.Engine {
 		posts.DELETE("/:id", api.DeletePost)
 	}
 
+	// JWT-protected routes
+	postsjwt := r.Group("/postsjwt", middleware.Authorize())
+	{
+		postsjwt.GET("/", api.GetPosts)
+		postsjwt.GET("/:id", api.GetPost)
+		postsjwt.POST("/", api.CreatePost)
+		postsjwt.PUT("/:id", api.UpdatePost)
+		postsjwt.DELETE("/:id", api.DeletePost)
+	}
+
+	authRouter := r.Group("/auth")
+	{
+		authRouter.POST("/signup", api.Signup)
+		authRouter.POST("/signin", api.Signin)
+		authRouter.POST("/refresh", api.RefreshToken)
+		authRouter.POST("/check", api.CheckToken)
+	}
+
 	// Protected routes
 	// For authorized access, group protected routes using gin.BasicAuth() middleware
 	// gin.Accounts is a shortcut for map[string]string
