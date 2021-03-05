@@ -19,6 +19,7 @@ func Setup(db *gorm.DB) *gin.Engine {
 	r.Use(gin.Recovery())
 	r.Use(middleware.CORS())
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
+	r.Use(middleware.Security())
 
 	api := controller.Controller{DB: db}
 
