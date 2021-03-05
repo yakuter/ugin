@@ -2,6 +2,8 @@ package router
 
 import (
 	"github.com/jinzhu/gorm"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"github.com/yakuter/ugin/controller"
 	"github.com/yakuter/ugin/pkg/middleware"
 
@@ -57,6 +59,8 @@ func Setup(db *gorm.DB) *gin.Engine {
 
 	// /admin/dashboard endpoint is now protected
 	authorized.GET("/dashboard", controller.Dashboard)
+	// /swagger/index.html
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }

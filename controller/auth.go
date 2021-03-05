@@ -34,7 +34,15 @@ func (base *Controller) Signup(c *gin.Context) {
 
 }
 
-// Signin Controller
+// Signin godoc
+// @Summary Signin
+// @Description Signin Process
+// @Tags auth
+// @Accept  json
+// @Produce  json
+// @Param Signin body object true "Signin"
+// @Success 200 "Success"
+// @Router /auth/signin [post]
 func (base *Controller) Signin(c *gin.Context) {
 	var credential model.AuthLoginDTO
 	err := c.ShouldBindJSON(&credential)
@@ -73,7 +81,15 @@ func (base *Controller) Signin(c *gin.Context) {
 
 }
 
-// RefreshToken Controller
+// RefreshToken godoc
+// @Summary Refresh Token
+// @Description RefreshToken Process
+// @Tags auth
+// @Accept  json
+// @Produce  json
+// @Param RefreshToken body object true "RefreshToken"
+// @Success 200 "Success"
+// @Router /auth/refresh [post]
 func (base *Controller) RefreshToken(c *gin.Context) {
 
 	mapToken := map[string]string{}
@@ -112,7 +128,16 @@ func (base *Controller) RefreshToken(c *gin.Context) {
 	c.JSON(http.StatusOK, authLoginResponse)
 }
 
-// CheckToken Controller
+// CheckToken godoc
+// @Summary CheckToken
+// @Description CheckToken header example
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Param Token header string true "Insert your access token" default(Bearer <Add access token here>)
+// @Success 200 "success"
+// @Router /auth/check [post]
 func (base *Controller) CheckToken(c *gin.Context) {
 	var tokenStr string
 	bearerToken := c.GetHeader("Authorization")
