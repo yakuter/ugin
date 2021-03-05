@@ -1,5 +1,8 @@
 package config
 
 type ServerConfiguration struct {
-	Port string
+	Port                       string
+	Secret                     string
+	AccessTokenExpireDuration  int
+	RefreshTokenExpireDuration int
 }

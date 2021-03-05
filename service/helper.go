@@ -1,11 +1,21 @@
 package service
 
 import (
+	"crypto/rand"
+	"encoding/base64"
+	"errors"
+	mathRand "math/rand"
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jinzhu/gorm"
+)
+
+var (
+	minSecureKeyLength = 8
+	errShortSecureKey  = errors.New("length of secure key does not meet with minimum requirements")
 )
 
 // Offset returns the starting number of result for pagination
@@ -51,4 +61,49 @@ func ToSnakeCase(str string) string {
 	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
 
 	return strings.ToLower(snake)
+}
+
+// FallbackInsecureKey fallback method for sercure key
+func FallbackInsecureKey(length int) (string, error) {
+	const charset = "abcdefghijklmnopqrstuvwxyz" +
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+		"0123456789" +
+		"~!@#$%^&*()_+{}|<>?,./:"
+
+	if err := checkSecureKeyLen(length); err != nil {
+		return "", err
+	}
+
+	var seededRand *mathRand.Rand = mathRand.New(
+		mathRand.NewSource(time.Now().UnixNano()))
+
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+
+	return string(b), nil
+}
+
+// GenerateSecureKey generates a secure key width a given length
+func GenerateSecureKey(length int) (string, error) {
+	key := make([]byte, length)
+
+	if err := checkSecureKeyLen(length); err != nil {
+		return "", err
+	}
+	_, err := rand.Read(key)
+	if err != nil {
+		return FallbackInsecureKey(length)
+	}
+	// encrypted key length > provided key length
+	keyEnc := base64.StdEncoding.EncodeToString(key)
+	return keyEnc, nil
+}
+
+func checkSecureKeyLen(length int) error {
+	if length < minSecureKeyLength {
+		return errShortSecureKey
+	}
+	return nil
 }
