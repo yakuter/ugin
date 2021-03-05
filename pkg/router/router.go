@@ -1,6 +1,7 @@
 package router
 
 import (
+	"github.com/gin-contrib/gzip"
 	"github.com/jinzhu/gorm"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -17,6 +18,7 @@ func Setup(db *gorm.DB) *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.Use(middleware.CORS())
+	r.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	api := controller.Controller{DB: db}
 
