@@ -64,7 +64,8 @@ func Setup(db *gorm.DB) *gin.Engine {
 	// /admin/dashboard endpoint is now protected
 	authorized.GET("/dashboard", controller.Dashboard)
 	// /swagger/index.html
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	url := ginSwagger.URL("http://localhost:8081/swagger/doc.json")
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	return r
 }

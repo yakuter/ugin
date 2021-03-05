@@ -64,7 +64,7 @@ func Security() gin.HandlerFunc {
 		c.Writer.Header().Add("X-Content-Type-Options", "nosniff")
 
 		// Content Security Policy
-		c.Writer.Header().Add("Content-Security-Policy", "default-src 'self';")
+		//c.Writer.Header().Add("Content-Security-Policy", "default-src 'self';")
 
 		// X-Permitted-Cross-Domain-Policies
 		c.Writer.Header().Add("X-Permitted-Cross-Domain-Policies", "none")
@@ -74,10 +74,7 @@ func Security() gin.HandlerFunc {
 
 		// Feature-Policy
 		c.Writer.Header().Add("Feature-Policy", "microphone 'none'; camera 'none'")
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
+
 		c.Next()
 	}
 }
