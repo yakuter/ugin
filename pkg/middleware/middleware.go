@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/didip/tollbooth"
 	"github.com/gin-gonic/gin"
+	"github.com/yakuter/ugin/pkg/config"
 	"github.com/yakuter/ugin/service"
 )
 
@@ -28,6 +30,21 @@ func CORS() gin.HandlerFunc {
 			return
 		}
 		c.Next()
+	}
+}
+
+// MyLimit middleware
+func MyLimit() gin.HandlerFunc {
+	config := config.GetConfig()
+	lmt := tollbooth.NewLimiter(config.Server.LimitCountPerRequest, nil)
+	return func(c *gin.Context) {
+		httpError := tollbooth.LimitByRequest(lmt, c.Writer, c.Request)
+		if httpError != nil {
+			c.Data(httpError.StatusCode, lmt.GetMessageContentType(), []byte(httpError.Message))
+			c.Abort()
+		} else {
+			c.Next()
+		}
 	}
 }
 
