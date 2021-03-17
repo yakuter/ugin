@@ -20,6 +20,7 @@ func Setup(db *gorm.DB) *gin.Engine {
 	r.Use(middleware.CORS())
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 	r.Use(middleware.Security())
+	r.Use(middleware.MyLimit())
 
 	api := controller.Controller{DB: db}
 
