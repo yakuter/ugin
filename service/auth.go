@@ -64,7 +64,7 @@ func TokenValid(bearerToken string) (*jwt.Token, error) {
 		}
 		return nil, err
 	}
-	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
+	if !token.Valid {
 		return nil, fmt.Errorf("Unauthorized")
 	}
 	return token, nil

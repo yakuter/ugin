@@ -83,9 +83,13 @@ func (base *Controller) GetPosts(c *gin.Context) {
 func (base *Controller) CreatePost(c *gin.Context) {
 	post := new(model.Post)
 
-	c.ShouldBindJSON(&post)
+	err := c.ShouldBindJSON(&post)
+	if err != nil {
+		c.AbortWithStatus(400)
+		return
+	}
 
-	post, err := service.SavePost(base.DB, post)
+	post, err = service.SavePost(base.DB, post)
 	if err != nil {
 		c.AbortWithStatus(404)
 		return
@@ -113,7 +117,11 @@ func (base *Controller) UpdatePost(c *gin.Context) {
 		return
 	}
 
-	c.ShouldBindJSON(&post)
+	err = c.ShouldBindJSON(&post)
+	if err != nil {
+		c.AbortWithStatus(400)
+		return
+	}
 
 	post, err = service.SavePost(base.DB, post)
 	if err != nil {

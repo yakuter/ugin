@@ -36,5 +36,5 @@ func main() {
 	r := router.Setup(db)
 
 	log.Printf("Server is starting at 127.0.0.1:%s", config.Server.Port)
-	r.Run("127.0.0.1:" + config.Server.Port)
+	log.Fatal(r.Run("127.0.0.1:" + config.Server.Port))
 }

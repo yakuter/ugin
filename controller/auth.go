@@ -13,14 +13,9 @@ import (
 
 var (
 	userLoginErr   = "User email or master password is wrong."
-	userVerifyErr  = "Please verify your email first."
-	invalidUser    = "Invalid user"
-	validToken     = "Token is valid"
 	invalidToken   = "Token is expired or not valid!"
 	noToken        = "Token could not found! "
 	tokenCreateErr = "Token could not be created"
-	signupSuccess  = "User created successfully"
-	verifySuccess  = "Email verified successfully"
 )
 
 // Signup Controller

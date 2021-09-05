@@ -13,7 +13,6 @@ import (
 )
 
 var (
-	validToken   = "Token is valid"
 	invalidToken = "Token is expired or not valid!"
 	noToken      = "Token could not found! "
 )
