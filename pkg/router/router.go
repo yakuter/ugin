@@ -3,8 +3,6 @@ package router
 import (
 	"github.com/gin-contrib/gzip"
 	"github.com/jinzhu/gorm"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"github.com/yakuter/ugin/controller"
 	"github.com/yakuter/ugin/pkg/middleware"
 
@@ -15,6 +13,7 @@ func Setup(db *gorm.DB) *gin.Engine {
 	r := gin.New()
 
 	// Middlewares
+	gin.SetMode(gin.ReleaseMode)
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 	r.Use(middleware.CORS())
@@ -63,9 +62,6 @@ func Setup(db *gorm.DB) *gin.Engine {
 
 	// /admin/dashboard endpoint is now protected
 	authorized.GET("/dashboard", controller.Dashboard)
-	// /swagger/index.html
-	url := ginSwagger.URL("http://localhost:8081/swagger/doc.json")
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	return r
 }

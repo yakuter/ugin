@@ -1,9 +1,8 @@
 package config
 
 import (
-	"log"
-
 	"github.com/spf13/viper"
+	"github.com/yakuter/ugin/pkg/logger"
 )
 
 var Config *Configuration
@@ -14,7 +13,7 @@ type Configuration struct {
 }
 
 // Setup initialize configuration
-func Setup() {
+func Setup() error {
 	var configuration *Configuration
 
 	viper.SetConfigName("config")
@@ -22,15 +21,19 @@ func Setup() {
 	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err)
+		logger.Errorf("Error reading config file, %s", err)
+		return err
 	}
 
 	err := viper.Unmarshal(&configuration)
 	if err != nil {
-		log.Fatalf("Unable to decode into struct, %v", err)
+		logger.Errorf("Unable to decode into struct, %v", err)
+		return err
 	}
 
 	Config = configuration
+
+	return nil
 }
 
 // GetConfig helps you to get configuration data
