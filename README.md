@@ -77,6 +77,27 @@ ERROR 2021-09-19T00:39:19+03:00 Failed to open log file ugin.log
 [GIN] 2021/09/19 - 00:41:51 | 200 |     6.41675ms |       127.0.0.1 | GET      "/posts/4"
 ```
 
+## Routes
+Default **UGin** routes are listed below. 
+
+| METHOD  | ROUTE            | FUNCTION                                                      |
+|---------|------------------|---------------------------------------------------------------|
+| GET     | /posts/          | github.com/yakuter/ugin/controller.(*Controller).GetPosts     |
+| GET     | /posts/:id       | github.com/yakuter/ugin/controller.(*Controller).GetPost      |
+| POST    | /posts/          | github.com/yakuter/ugin/controller.(*Controller).CreatePost   |
+| PUT     | /posts/:id       | github.com/yakuter/ugin/controller.(*Controller).UpdatePost   |
+| DELETE  | /posts/:id       | github.com/yakuter/ugin/controller.(*Controller).DeletePost   |
+| GET     | /postsjwt/       | github.com/yakuter/ugin/controller.(*Controller).GetPosts     |
+| GET     | /postsjwt/:id    | github.com/yakuter/ugin/controller.(*Controller).GetPost      |
+| POST    | /postsjwt/       | github.com/yakuter/ugin/controller.(*Controller).CreatePost   |
+| PUT     | /postsjwt/:id    | github.com/yakuter/ugin/controller.(*Controller).UpdatePost   |
+| DELETE  | /postsjwt/:id    | github.com/yakuter/ugin/controller.(*Controller).DeletePost   |
+| POST    | /auth/signup     | github.com/yakuter/ugin/controller.(*Controller).Signup       |
+| POST    | /auth/signin     | github.com/yakuter/ugin/controller.(*Controller).Signin       |
+| POST    | /auth/refresh    | github.com/yakuter/ugin/controller.(*Controller).RefreshToken |
+| POST    | /auth/check      | github.com/yakuter/ugin/controller.(*Controller).CheckToken   |
+| GET     | /admin/dashboard | github.com/yakuter/ugin/controller.Dashboard                  |
+
 ## Dependencies
 **UGin** uses **Gin** for main framework, **Gorm** for database and **Viper** for configuration.
 ```
