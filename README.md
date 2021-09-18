@@ -49,6 +49,34 @@ UGin has it's own filtering, search and pagination system. You just need to use 
 
 Full: **http://localhost:8081/posts/?Limit=25&Offset=0&Sort=ID&Order=DESC&Search=hello**
 
+## Logging
+**UGin** has a very powerful logging logic. There is **application log (ugin.log)**, **database log (ugin.db.log)** and **access log (ugin.access.log)**
+
+### ugin.log:
+```
+INFO 2021-09-19T00:33:32+03:00 Server is starting at 127.0.0.1:8081
+ERROR 2021-09-19T00:39:19+03:00 Failed to open log file ugin.log
+```
+### ugin.db.log:
+```
+2021/09/19 00:33:32 /home/user/projects/ugin/pkg/database/database.go:76
+[0.023ms] [rows:-] SELECT * FROM `posts` LIMIT 1
+
+2021/09/19 00:33:32 /home/user/go/pkg/mod/gorm.io/driver/sqlite@v1.1.5/migrator.go:261
+[0.015ms] [rows:-] SELECT count(*) FROM sqlite_master WHERE type = "index" AND tbl_name = "posts" AND name = "idx_posts_deleted_at"
+
+2021/09/19 00:33:32 /home/user/go/pkg/mod/gorm.io/driver/sqlite@v1.1.5/migrator.go:32
+[0.010ms] [rows:-] SELECT count(*) FROM sqlite_master WHERE type='table' AND name="tags"
+
+2021/09/19 00:33:32 /home/user/projects/ugin/pkg/database/database.go:76
+[0.011ms] [rows:-] SELECT * FROM `tags` LIMIT 1
+```
+### ugin.access.log:
+```
+[GIN] 2021/09/19 - 00:33:43 | 200 |    9.255625ms |       127.0.0.1 | GET      "/posts/"
+[GIN] 2021/09/19 - 00:41:51 | 200 |     6.41675ms |       127.0.0.1 | GET      "/posts/4"
+```
+
 ## Dependencies
 **UGin** uses **Gin** for main framework, **Gorm** for database and **Viper** for configuration.
 ```
