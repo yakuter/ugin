@@ -1,10 +1,9 @@
 package service
 
 import (
-	"log"
-
 	"github.com/gin-gonic/gin"
 	"github.com/yakuter/ugin/model"
+	"github.com/yakuter/ugin/pkg/logger"
 	"gorm.io/gorm"
 )
 
@@ -13,8 +12,7 @@ func GetPost(db *gorm.DB, id string) (*model.Post, error) {
 	post := new(model.Post)
 
 	if err := db.Where("id = ? ", id).Preload("Tags").First(&post).Error; err != nil {
-		log.Println(err)
-
+		logger.Errorf("GetPost error: %v", err)
 		return nil, err
 	}
 
@@ -33,7 +31,7 @@ func GetPosts(c *gin.Context, db *gorm.DB, args model.Args) ([]model.Post, int64
 	query = query.Scopes(Search(args.Search))
 
 	if err := query.Preload("Tags").Find(&posts).Error; err != nil {
-		log.Println(err)
+		logger.Errorf("GetPosts error: %v", err)
 		return posts, filteredData, totalData, err
 	}
 
@@ -52,6 +50,7 @@ func GetPosts(c *gin.Context, db *gorm.DB, args model.Args) ([]model.Post, int64
 // SavePost both cretes and updates post according to if ID field is empty or not
 func SavePost(db *gorm.DB, post *model.Post) (*model.Post, error) {
 	if err := db.Save(&post).Error; err != nil {
+		logger.Errorf("SavePost error: %v", err)
 		return post, err
 	}
 
@@ -62,13 +61,13 @@ func SavePost(db *gorm.DB, post *model.Post) (*model.Post, error) {
 func DeletePost(db *gorm.DB, id string) error {
 	post := new(model.Post)
 	if err := db.Where("id = ? ", id).Delete(&post).Error; err != nil {
-		log.Println(err)
+		logger.Errorf("DeletePost (post) error: %v", err)
 		return err
 	}
 
 	tag := new(model.Tag)
 	if err := db.Where("post_id = ? ", id).Delete(&tag).Error; err != nil {
-		log.Println(err)
+		logger.Errorf("DeletePost (tag) error: %v", err)
 	}
 
 	return nil
