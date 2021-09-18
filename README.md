@@ -98,8 +98,20 @@ Default **UGin** routes are listed below.
 | POST    | /auth/check      | github.com/yakuter/ugin/controller.(*Controller).CheckToken   |
 | GET     | /admin/dashboard | github.com/yakuter/ugin/controller.Dashboard                  |
 
-## Dependencies
-**UGin** uses **Gin** for main framework, **Gorm** for database and **Viper** for configuration.
+## Gin Running Mode
+Gin framework listens **GIN_MODE** environment variable to set running mode. This mode enables/disables access log. Just run one of these commands before running **UGin**
+```bash
+// Debug mod
+export GIN_MODE=debug
+// Test mod
+export GIN_MODE=test
+// Release mod
+export GIN_MODE=release
+```
+
+
+## Packages
+**UGin** uses great open source projects list below: **Gin** for main framework, **Gorm** for database and **Viper** for configuration.
 ```
 go get -u github.com/gin-gonic/gin
 go get -u github.com/jinzhu/gorm
