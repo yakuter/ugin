@@ -4,8 +4,8 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"github.com/yakuter/ugin/model"
+	"gorm.io/gorm"
 )
 
 func GetPost(db *gorm.DB, id string) (*model.Post, error) {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/spf13/viper"
 	"github.com/yakuter/ugin/pkg/config"
 	"github.com/yakuter/ugin/pkg/database"
 	"github.com/yakuter/ugin/pkg/logger"
@@ -16,11 +17,9 @@ func main() {
 		logger.Fatalf("database.Setup() error: %s", err)
 	}
 
-	config := config.GetConfig()
-
 	db := database.GetDB()
 	r := router.Setup(db)
 
-	logger.Infof("Server is starting at 127.0.0.1:%s", config.Server.Port)
-	logger.Fatalf("%v", r.Run("127.0.0.1:"+config.Server.Port))
+	logger.Infof("Server is starting at 127.0.0.1:%s", viper.GetString("server.port"))
+	logger.Fatalf("%v", r.Run("127.0.0.1:"+viper.GetString("server.port")))
 }

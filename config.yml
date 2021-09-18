@@ -1,6 +1,6 @@
 database:
   driver: "sqlite"
-  dbname: "database_name"
+  dbname: "ugin"
   username: "user"
   password: "password"
   host: "localhost"

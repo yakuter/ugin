@@ -1,10 +1,14 @@
 package router
 
 import (
+	"io"
+	"os"
+
 	"github.com/gin-contrib/gzip"
-	"github.com/jinzhu/gorm"
 	"github.com/yakuter/ugin/controller"
+	"github.com/yakuter/ugin/pkg/logger"
 	"github.com/yakuter/ugin/pkg/middleware"
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,8 +18,20 @@ func Setup(db *gorm.DB) *gin.Engine {
 
 	// Middlewares
 	gin.SetMode(gin.ReleaseMode)
+
+	// Write gin access log to file
+	f, err := os.Create("ugin.access.log")
+	if err != nil {
+		logger.Errorf("Failed to create access log file: %v", err)
+	} else {
+		gin.DefaultWriter = io.MultiWriter(f)
+	}
+
+	// Set default middlewares
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
+
+	// Set custom middlewares
 	r.Use(middleware.CORS())
 	r.Use(gzip.Gzip(gzip.DefaultCompression))
 	r.Use(middleware.Security())

@@ -1,6 +1,15 @@
 
 # UGIN CHANGELOG
 
+## Version: [1.1.2] (2021-09-18)
+### Added
+- Logrus logger
+- Access log and DB log to file
+
+### Changed
+- Gorm to new version
+- Overall refactor
+
 ## Version: [1.1.1] (2020-03-28)
 ### Changed
 - Moved config, database and middlewares to pkg

@@ -1,16 +1,21 @@
 package database
 
 import (
+	"errors"
 	"fmt"
+	"io"
+	"log"
+	"os"
+	"time"
 
+	"github.com/spf13/viper"
 	"github.com/yakuter/ugin/model"
-	"github.com/yakuter/ugin/pkg/config"
-	"github.com/yakuter/ugin/pkg/logger"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var (
@@ -27,35 +32,45 @@ type Database struct {
 func Setup() error {
 	var db = DB
 
-	config := config.GetConfig()
+	driver := viper.GetString("database.driver")
+	dbname := viper.GetString("database.dbname")
+	username := viper.GetString("database.username")
+	password := viper.GetString("database.password")
+	host := viper.GetString("database.host")
+	port := viper.GetString("database.port")
+	logmode := viper.GetBool("database.logmode")
+	loglevel := logger.Silent
+	if logmode {
+		loglevel = logger.Info
+	}
 
-	driver := config.Database.Driver
-	database := config.Database.Dbname
-	username := config.Database.Username
-	password := config.Database.Password
-	host := config.Database.Host
-	port := config.Database.Port
+	newDBLogger := logger.New(
+		log.New(getWriter(), "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold:             time.Second, // Slow SQL threshold
+			LogLevel:                  loglevel,    // Log level (Silent, Error, Warn, Info)
+			IgnoreRecordNotFoundError: true,        // Ignore ErrRecordNotFound error for logger
+			Colorful:                  false,       // Disable color
+		},
+	)
 
 	switch driver {
 	case "sqlite":
-		db, err = gorm.Open("sqlite3", fmt.Sprintf("%s", database))
+		db, err = gorm.Open(sqlite.Open("ugin.db"), &gorm.Config{Logger: newDBLogger})
 	case "mysql":
-		db, err = gorm.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True", username, password, host, port, database))
+		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True", username, password, host, port, dbname)
+		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{Logger: newDBLogger})
 	case "postgres":
-		db, err = gorm.Open("postgres", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8", username, password, host, port, database))
+		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=enable", host, username, password, dbname, port)
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newDBLogger})
 	default:
-		logger.Errorf("Database driver not found")
-		return err
+		return errors.New("Unsupported database driver")
 	}
 
 	if err != nil {
 		DBErr = err
-		logger.Errorf("Failed to load database error: %v", err)
 		return err
 	}
-
-	// Change this to true if you want to see SQL queries
-	db.LogMode(config.Database.LogMode)
 
 	// Auto migrate project models
 	db.AutoMigrate(&model.Post{}, &model.Tag{})
@@ -72,4 +87,13 @@ func GetDB() *gorm.DB {
 // GetDBErr helps you to get a connection
 func GetDBErr() error {
 	return DBErr
+}
+
+func getWriter() io.Writer {
+	file, err := os.OpenFile("ugin.db.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		return os.Stdout
+	} else {
+		return file
+	}
 }

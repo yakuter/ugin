@@ -1,6 +1,6 @@
 package controller
 
-import "github.com/jinzhu/gorm"
+import "gorm.io/gorm"
 
 type Controller struct {
 	DB *gorm.DB
