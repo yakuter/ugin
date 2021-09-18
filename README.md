@@ -8,7 +8,7 @@ UGin uses **gorm** as an ORM. So **Sqlite3**, **MySQL** and **PostgreSQL** is su
 ```
 database:
   driver: "postgres"
-  dbname: "database_name"
+  dbname: "ugin"
   username: "user"
   password: "password"
   host: "localhost"
@@ -16,7 +16,7 @@ database:
 ```
 
 ## Default Models
-UGin has two models (Post and Tag) as boilerplate to show relational database usage.
+**UGin** has two models (Post and Tag) as boilerplate to show relational database usage.
 
 **/model/post-model.go** content:
 ```
@@ -36,7 +36,7 @@ type Tag struct {
 ```
 
 ## Filtering, Search and Pagination
-UGin has it's own filtering, search and pagination system. You just need to use these parameters.
+**UGin** has it's own filtering, search and pagination system. You just need to use these parameters.
 
 **Query parameters:**
 ```
@@ -141,17 +141,6 @@ authorized := router.Group("/admin", gin.BasicAuth(gin.Accounts{
 authorized.GET("/dashboard", controller.Dashboard)
 ```
 
-If you want to use JWT for authorization in UGin, you can check this: https://github.com/appleboy/gin-jwt
-
-## Default Endpoints
-| Method | URI              | Function               |
-|--------|------------------|------------------------|
-| GET    | /posts/          | controller.GetPosts    |
-| POST   | /posts/          | controller.CreatePost  |
-| GET    | /posts/:id       | controller.GetPost     |
-| PUT    | /posts/:id       | controller.UpdatePost  |
-| DELETE | /posts/:id       | controller.DeletePost  |
-| GET    | /admin/dashboard | controller.Dashboard   |
 
 ## What is next?
 - Ugin needs a user service and an authentication method with JWT.
