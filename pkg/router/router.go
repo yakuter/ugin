@@ -16,9 +16,6 @@ import (
 func Setup(db *gorm.DB) *gin.Engine {
 	r := gin.New()
 
-	// Middlewares
-	gin.SetMode(gin.ReleaseMode)
-
 	// Write gin access log to file
 	f, err := os.OpenFile("ugin.access.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
