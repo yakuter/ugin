@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/spf13/viper"
 	"github.com/yakuter/ugin/pkg/config"
 	"github.com/yakuter/ugin/pkg/database"
@@ -21,5 +23,6 @@ func main() {
 	r := router.Setup(db)
 
 	logger.Infof("Server is starting at 127.0.0.1:%s", viper.GetString("server.port"))
+	fmt.Printf("Server is starting at 127.0.0.1:%s Check logs for details.", viper.GetString("server.port"))
 	logger.Fatalf("%v", r.Run("127.0.0.1:"+viper.GetString("server.port")))
 }
