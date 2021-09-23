@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"github.com/yakuter/ugin/model"
 	"github.com/yakuter/ugin/pkg/config"
 )
