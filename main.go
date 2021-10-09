@@ -22,7 +22,11 @@ func main() {
 	db := database.GetDB()
 	r := router.Setup(db)
 
-	logger.Infof("Server is starting at 127.0.0.1:%s", viper.GetString("server.port"))
-	fmt.Printf("Server is starting at 127.0.0.1:%s Check logs for details.", viper.GetString("server.port"))
-	logger.Fatalf("%v", r.Run("127.0.0.1:"+viper.GetString("server.port")))
+	host := "127.0.0.1"
+	if h := viper.GetString("server.host"); h != "" {
+		host = h
+	}
+	logger.Infof("Server is starting at %s:%s", host, viper.GetString("server.port"))
+	fmt.Printf("Server is starting at %s:%s Check logs for details.", host, viper.GetString("server.port"))
+	logger.Fatalf("%v", r.Run(host+":"+viper.GetString("server.port")))
 }
