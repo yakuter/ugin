@@ -99,7 +99,7 @@ Default **UGin** routes are listed below.
 | GET     | /admin/dashboard | github.com/yakuter/ugin/controller.Dashboard                  |
 
 ## Gin Running Mode
-Gin framework listens **GIN_MODE** environment variable to set running mode. This mode enables/disables access log. Just run one of these commands before running **UGin**
+Gin framework listens **GIN_MODE** environment variable to set running mode. This mode enables/disables access log. Just run one of these commands before running **UGin**:
 ```bash
 // Debug mod
 export GIN_MODE=debug
