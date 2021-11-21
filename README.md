@@ -49,6 +49,25 @@ type Tag struct {
 
 Full: **http://localhost:8081/posts/?Limit=25&Offset=0&Sort=ID&Order=DESC&Search=hello**
 
+## Running
+
+To run UGin with Docker, firstly build an image:
+```
+make build-image
+```
+
+To run Ugin with MySQL:
+```
+make run-app-mysql
+```
+
+To run Ugin with PostgreSQL:
+```
+make run-app-postgres
+```
+
+Application will be served at ":8081"
+
 ## Logging
 **UGin** has a very powerful logging logic. There is **application log (ugin.log)**, **database log (ugin.db.log)** and **access log (ugin.access.log)**
 

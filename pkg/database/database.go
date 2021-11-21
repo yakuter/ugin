@@ -39,6 +39,7 @@ func Setup() error {
 	host := viper.GetString("database.host")
 	port := viper.GetString("database.port")
 	logmode := viper.GetBool("database.logmode")
+	sslmode := viper.GetString("database.sslmode")
 	loglevel := logger.Silent
 	if logmode {
 		loglevel = logger.Info
@@ -61,7 +62,10 @@ func Setup() error {
 		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True", username, password, host, port, dbname)
 		db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{Logger: newDBLogger})
 	case "postgres":
-		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=enable", host, username, password, dbname, port)
+		dsn := fmt.Sprintf(
+			"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+			host, username, password, dbname, port, sslmode,
+		)
 		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newDBLogger})
 	default:
 		return errors.New("Unsupported database driver")

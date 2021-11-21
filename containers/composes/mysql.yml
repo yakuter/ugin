@@ -1,0 +1,16 @@
+database:
+  driver: "mysql"
+  dbname: "ugin"
+  username: "user"
+  password: "password"
+  host: "mysql"
+  port: "3306"
+  logmode: true
+
+server:
+  host: "0.0.0.0"
+  port: "8081"
+  secret: "mySecretKey"
+  accessTokenExpireDuration: 1
+  refreshTokenExpireDuration: 1
+  limitCountPerRequest: 1

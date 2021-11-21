@@ -1,0 +1,17 @@
+database:
+  driver: "postgres"
+  dbname: "ugin"
+  username: "user"
+  password: "password"
+  host: "postgres"
+  sslmode: "disable"
+  port: "5432"
+  logmode: true
+
+server:
+  host: "0.0.0.0"
+  port: "8081"
+  secret: "mySecretKey"
+  accessTokenExpireDuration: 1
+  refreshTokenExpireDuration: 1
+  limitCountPerRequest: 1
