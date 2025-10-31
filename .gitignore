@@ -11,6 +11,7 @@
 # Build output
 bin/
 ugin
+docs/
 
 # Test binary, built with `go test -c`
 *.test

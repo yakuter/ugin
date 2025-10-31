@@ -5,7 +5,7 @@
 [![GORM Version](https://img.shields.io/badge/GORM-1.30.0-00ADD8?style=flat)](https://gorm.io/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-A production-ready REST API boilerplate written in Go with Gin Framework, featuring JWT authentication, GORM ORM, and comprehensive middleware support.
+A production-ready REST API boilerplate written in Go with Gin Framework, featuring JWT authentication, GORM ORM, comprehensive middleware support, and **interactive Swagger documentation**.
 
 ## ✨ Features
 
@@ -23,6 +23,7 @@ A production-ready REST API boilerplate written in Go with Gin Framework, featur
 - 🧪 **Fully Testable** - Interface-based design for easy mocking
 - 🌐 **Context Propagation** - Proper context handling throughout the stack
 - ♻️ **Graceful Shutdown** - Proper resource cleanup on exit
+- 📚 **Swagger/OpenAPI** - Interactive API documentation with Swagger UI
 
 ## 📋 Table of Contents
 
@@ -30,17 +31,18 @@ A production-ready REST API boilerplate written in Go with Gin Framework, featur
 - [Project Structure](#-project-structure)
 - [Configuration](#-configuration)
 - [API Endpoints](#-api-endpoints)
+  - [Interactive API Documentation (Swagger)](#-interactive-api-documentation)
 - [Database](#-database)
 - [Middleware](#-middleware)
 - [Logging](#-logging)
 - [Development](#-development)
+  - [Swagger Documentation](#swagger-documentation)
 - [Docker Support](#-docker-support)
 
 ## 📚 Additional Documentation
 
 - **[QUICK_START.md](QUICK_START.md)** - Fast setup guide with common commands
-- **[ARCHITECTURE_IMPROVEMENTS.md](ARCHITECTURE_IMPROVEMENTS.md)** - Detailed architecture improvements and best practices
-- **[CORE_PACKAGE.md](CORE_PACKAGE.md)** - Core package explanation and usage guide
+- **[SWAGGER_GUIDE.md](SWAGGER_GUIDE.md)** - Complete Swagger/OpenAPI documentation guide
 
 ## 🚀 Quick Start
 
@@ -77,6 +79,8 @@ make run-dev
 ```
 
 The server will start at `http://127.0.0.1:8081`
+
+**🎉 Access Swagger UI:** `http://127.0.0.1:8081/swagger/index.html`
 
 ## 📁 Project Structure
 
@@ -200,6 +204,17 @@ database:
 ## 📡 API Endpoints
 
 All API endpoints are versioned with `/api/v1` prefix.
+
+### 📚 Interactive API Documentation
+
+**Swagger UI** is available at: **`http://localhost:8081/swagger/index.html`**
+
+- 📖 View all endpoints with detailed documentation
+- 🧪 Test API endpoints directly from browser
+- 🔐 Test authentication with JWT tokens
+- 📋 See request/response examples with real data
+
+See [SWAGGER_GUIDE.md](SWAGGER_GUIDE.md) for detailed usage.
 
 ### Authentication Endpoints
 
@@ -632,6 +647,26 @@ make deps-update
 make clean
 ```
 
+### Swagger Documentation
+
+```bash
+# Generate Swagger docs
+make swagger
+
+# Generate docs and run
+make run-swagger
+
+# View documentation
+# Open http://localhost:8081/swagger/index.html
+```
+
+**Note:** You need to install `swag` CLI first:
+```bash
+go install github.com/swaggo/swag/cmd/swag@latest
+```
+
+See [SWAGGER_GUIDE.md](SWAGGER_GUIDE.md) for detailed Swagger usage.
+
 ## 🐳 Docker Support
 
 ### Build Docker Image
@@ -680,6 +715,7 @@ Core dependencies:
 - [golang-jwt/jwt](https://github.com/golang-jwt/jwt) - JWT implementation
 - [sirupsen/logrus](https://github.com/sirupsen/logrus) - Structured logging
 - [didip/tollbooth](https://github.com/didip/tollbooth) - Rate limiting
+- [swaggo/swag](https://github.com/swaggo/swag) - Swagger documentation
 
 See `go.mod` for the complete list.
 

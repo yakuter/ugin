@@ -11,6 +11,8 @@ help:
 	@echo "  lint               - Run linter (requires golangci-lint)"
 	@echo "  fmt                - Format code"
 	@echo "  vet                - Run go vet"
+	@echo "  swagger            - Generate Swagger documentation"
+	@echo "  run-swagger        - Generate docs and run"
 	@echo "  build-image        - Build Docker image"
 	@echo "  run-app-mysql      - Run with MySQL using docker-compose"
 	@echo "  clean-app-mysql    - Stop MySQL docker-compose"
@@ -117,3 +119,12 @@ deps-update:
 	@echo "Updating dependencies..."
 	@go get -u ./...
 	@go mod tidy
+
+# Generate swagger documentation
+swagger:
+	@echo "Generating Swagger documentation..."
+	@swag init -g cmd/ugin/main.go -o docs
+	@echo "Swagger documentation generated! View at http://localhost:8081/swagger/index.html"
+
+# Run with swagger generation
+run-swagger: swagger run

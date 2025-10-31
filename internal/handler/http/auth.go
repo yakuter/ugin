@@ -20,6 +20,17 @@ func NewAuthHandler(service service.AuthService) *AuthHandler {
 }
 
 // SignIn handles POST /auth/signin
+// @Summary Sign in
+// @Description User sign in with email and password
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param credentials body domain.Credentials true "User credentials"
+// @Success 200 {object} domain.TokenDetails
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/auth/signin [post]
 func (h *AuthHandler) SignIn(c *gin.Context) {
 	ctx := c.Request.Context()
 
@@ -43,6 +54,17 @@ func (h *AuthHandler) SignIn(c *gin.Context) {
 }
 
 // SignUp handles POST /auth/signup
+// @Summary Sign up
+// @Description Register a new user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param credentials body domain.Credentials true "User credentials"
+// @Success 201 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 409 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/auth/signup [post]
 func (h *AuthHandler) SignUp(c *gin.Context) {
 	ctx := c.Request.Context()
 
@@ -69,6 +91,17 @@ func (h *AuthHandler) SignUp(c *gin.Context) {
 }
 
 // RefreshToken handles POST /auth/refresh
+// @Summary Refresh token
+// @Description Refresh access token using refresh token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param refresh body map[string]string true "Refresh token" SchemaExample({"refresh_token": "your_refresh_token"})
+// @Success 200 {object} domain.TokenDetails
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/auth/refresh [post]
 func (h *AuthHandler) RefreshToken(c *gin.Context) {
 	ctx := c.Request.Context()
 
@@ -95,6 +128,16 @@ func (h *AuthHandler) RefreshToken(c *gin.Context) {
 }
 
 // CheckToken handles POST /auth/check
+// @Summary Check token
+// @Description Validate JWT token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} map[string]interface{}
+// @Failure 401 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/auth/check [post]
 func (h *AuthHandler) CheckToken(c *gin.Context) {
 	ctx := c.Request.Context()
 

@@ -13,8 +13,8 @@ type TokenDetails struct {
 
 // Credentials represents user login credentials
 type Credentials struct {
-	Email          string `json:"email" binding:"required,email"`
-	MasterPassword string `json:"master_password" binding:"required,min=6"`
+	Email          string `json:"email" binding:"required,email" example:"user@example.com"`
+	MasterPassword string `json:"master_password" binding:"required,min=6" example:"password123"`
 }
 
 // TokenClaims represents the claims in a JWT token

@@ -21,6 +21,16 @@ func NewPostHandler(service service.PostService) *PostHandler {
 }
 
 // GetByID handles GET /posts/:id
+// @Summary Get post by ID
+// @Description Get a single post by ID
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param id path string true "Post ID"
+// @Success 200 {object} domain.Post
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/posts/{id} [get]
 func (h *PostHandler) GetByID(c *gin.Context) {
 	ctx := c.Request.Context()
 	id := c.Param("id")
@@ -39,6 +49,19 @@ func (h *PostHandler) GetByID(c *gin.Context) {
 }
 
 // List handles GET /posts
+// @Summary List posts
+// @Description Get all posts with pagination and filtering
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param Limit query int false "Limit" default(25)
+// @Param Offset query int false "Offset" default(0)
+// @Param Sort query string false "Sort field" default(id)
+// @Param Order query string false "Sort order" default(DESC)
+// @Param Search query string false "Search keyword"
+// @Success 200 {object} map[string]interface{}
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/posts [get]
 func (h *PostHandler) List(c *gin.Context) {
 	ctx := c.Request.Context()
 
@@ -68,6 +91,16 @@ func (h *PostHandler) List(c *gin.Context) {
 }
 
 // Create handles POST /posts
+// @Summary Create post
+// @Description Create a new post
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param post body domain.CreatePostRequest true "Post object"
+// @Success 201 {object} domain.Post
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/posts [post]
 func (h *PostHandler) Create(c *gin.Context) {
 	ctx := c.Request.Context()
 
@@ -90,6 +123,18 @@ func (h *PostHandler) Create(c *gin.Context) {
 }
 
 // Update handles PUT /posts/:id
+// @Summary Update post
+// @Description Update an existing post
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param id path string true "Post ID"
+// @Param post body domain.CreatePostRequest true "Post object"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/posts/{id} [put]
 func (h *PostHandler) Update(c *gin.Context) {
 	ctx := c.Request.Context()
 	id := c.Param("id")
@@ -117,6 +162,16 @@ func (h *PostHandler) Update(c *gin.Context) {
 }
 
 // Delete handles DELETE /posts/:id
+// @Summary Delete post
+// @Description Delete a post by ID
+// @Tags posts
+// @Accept json
+// @Produce json
+// @Param id path string true "Post ID"
+// @Success 200 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/v1/posts/{id} [delete]
 func (h *PostHandler) Delete(c *gin.Context) {
 	ctx := c.Request.Context()
 	id := c.Param("id")
