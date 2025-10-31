@@ -1,11 +1,192 @@
-# UGin - Ultimate Gin API
-UGin is an API boilerplate written in Go (Golang) with Gin Framework. https://github.com/gin-gonic/gin
+# 🚀 UGin - Ultimate Gin API Boilerplate
 
-## Database Support
-UGin uses **gorm** as an ORM. So **Sqlite3**, **MySQL** and **PostgreSQL** is supported. You just need to edit **config.yml** file according to your setup. 
+[![Go Version](https://img.shields.io/badge/Go-1.23-00ADD8?style=flat&logo=go)](https://go.dev/)
+[![Gin Version](https://img.shields.io/badge/Gin-1.10.0-00ADD8?style=flat)](https://github.com/gin-gonic/gin)
+[![GORM Version](https://img.shields.io/badge/GORM-1.30.0-00ADD8?style=flat)](https://gorm.io/)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**config.yml** content:
+A production-ready REST API boilerplate written in Go with Gin Framework, featuring JWT authentication, GORM ORM, and comprehensive middleware support.
+
+## ✨ Features
+
+- 🎯 **Modern Go** - Built with Go 1.23
+- ⚡ **Gin Framework** - Fast HTTP web framework
+- 🗄️ **Multi-Database Support** - SQLite, MySQL, PostgreSQL via GORM
+- 🔐 **JWT Authentication** - Secure token-based authentication
+- 📝 **Comprehensive Logging** - Application, database, and access logs
+- 🔍 **Advanced Querying** - Built-in filtering, search, and pagination
+- 🛡️ **Security Middleware** - CORS, rate limiting, and more
+- 📦 **Gzip Compression** - Automatic response compression
+- 🔄 **Hot Reload** - Development mode with auto-reload
+- 📊 **Structured Logging** - Using logrus
+- 🏗️ **Clean Architecture** - Repository pattern with dependency injection
+- 🧪 **Fully Testable** - Interface-based design for easy mocking
+- 🌐 **Context Propagation** - Proper context handling throughout the stack
+- ♻️ **Graceful Shutdown** - Proper resource cleanup on exit
+
+## 📋 Table of Contents
+
+- [Quick Start](#-quick-start)
+- [Project Structure](#-project-structure)
+- [Configuration](#-configuration)
+- [API Endpoints](#-api-endpoints)
+- [Database](#-database)
+- [Middleware](#-middleware)
+- [Logging](#-logging)
+- [Development](#-development)
+- [Docker Support](#-docker-support)
+
+## 📚 Additional Documentation
+
+- **[QUICK_START.md](QUICK_START.md)** - Fast setup guide with common commands
+- **[ARCHITECTURE_IMPROVEMENTS.md](ARCHITECTURE_IMPROVEMENTS.md)** - Detailed architecture improvements and best practices
+- **[CORE_PACKAGE.md](CORE_PACKAGE.md)** - Core package explanation and usage guide
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Go 1.23 or higher
+- Git
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yakuter/ugin.git
+cd ugin
+
+# Download dependencies
+go mod download
+
+# Build the application
+make build
+
+# Run the application
+./bin/ugin
 ```
+
+Or use the Makefile for a simpler workflow:
+
+```bash
+# Build and run in one command
+make run
+
+# Or run directly without building (development mode)
+make run-dev
+```
+
+The server will start at `http://127.0.0.1:8081`
+
+## 📁 Project Structure
+
+```
+ugin/
+├── cmd/                      # Application entry points
+│   └── ugin/
+│       └── main.go           # Main entry point (simple!)
+├── internal/                 # Private application code
+│   ├── core/                 # Application core
+│   │   ├── app.go            # Application lifecycle
+│   │   ├── database.go       # Database initialization
+│   │   └── router.go         # Router setup
+│   ├── domain/               # Domain models (entities)
+│   │   ├── post.go
+│   │   ├── user.go
+│   │   └── auth.go
+│   ├── repository/           # Data access layer
+│   │   ├── repository.go     # Repository interfaces
+│   │   └── gormrepo/         # GORM implementations
+│   │       ├── post.go
+│   │       └── user.go
+│   ├── service/              # Business logic layer
+│   │   ├── interfaces.go     # Service interfaces
+│   │   ├── post.go
+│   │   ├── auth.go
+│   │   └── post_test.go      # Example tests
+│   ├── handler/              # HTTP handlers
+│   │   └── http/
+│   │       ├── post.go
+│   │       ├── auth.go
+│   │       ├── admin.go
+│   │       └── middleware.go
+│   └── config/               # Configuration management
+│       └── config.go
+├── pkg/                      # Public reusable packages
+│   └── logger/               # Logging utilities
+│       └── logger.go
+├── containers/               # Docker configuration
+│   ├── composes/             # Docker compose files
+│   └── images/               # Dockerfiles
+├── bin/                      # Compiled binaries (gitignored)
+├── config.yml                # Application configuration
+├── Makefile                  # Build automation
+└── go.mod                    # Go module definition
+```
+
+This structure follows the [Standard Go Project Layout](https://github.com/golang-standards/project-layout) with **Clean Architecture** principles.
+
+### Architecture Layers
+
+1. **Core Layer** (`internal/core/`) - Application lifecycle and wiring
+2. **Domain Layer** (`internal/domain/`) - Pure business entities
+3. **Repository Layer** (`internal/repository/`) - Data access interfaces and implementations
+4. **Service Layer** (`internal/service/`) - Business logic and use cases
+5. **Handler Layer** (`internal/handler/`) - HTTP request/response handling
+6. **Infrastructure** (`pkg/`, `internal/config/`) - External concerns
+
+**Key Principles:**
+- ✅ **Dependency Injection** - No global state
+- ✅ **Interface-based** - Easy to mock and test
+- ✅ **Context Propagation** - Proper timeout and cancellation
+- ✅ **Clean Separation** - Each layer has a single responsibility
+- ✅ **Simple main.go** - Entry point is just 15 lines!
+
+## ⚙️ Configuration
+
+Edit `config.yml` to configure your application:
+
+```yaml
+database:
+  driver: "sqlite"      # Options: sqlite, mysql, postgres
+  dbname: "ugin"
+  username: "user"      # Not required for SQLite
+  password: "password"  # Not required for SQLite
+  host: "localhost"     # Not required for SQLite
+  port: "5432"          # Not required for SQLite
+  logmode: true         # Enable SQL query logging
+
+server:
+  port: "8081"
+  secret: "mySecretKey"                    # JWT secret key
+  accessTokenExpireDuration: 1             # Hours
+  refreshTokenExpireDuration: 1            # Hours
+  limitCountPerRequest: 1                  # Rate limit per request
+```
+
+### Database Drivers
+
+**SQLite** (Default - No setup required):
+```yaml
+database:
+  driver: "sqlite"
+  dbname: "ugin"
+  logmode: true
+```
+
+**MySQL**:
+```yaml
+database:
+  driver: "mysql"
+  dbname: "ugin"
+  username: "root"
+  password: "password"
+  host: "localhost"
+  port: "3306"
+```
+
+**PostgreSQL**:
+```yaml
 database:
   driver: "postgres"
   dbname: "ugin"
@@ -13,165 +194,519 @@ database:
   password: "password"
   host: "localhost"
   port: "5432"
+  sslmode: "disable"
 ```
 
-## Default Models
-**UGin** has two models (Post and Tag) as boilerplate to show relational database usage.
+## 📡 API Endpoints
 
-**/model/post-model.go** content:
-```
-type Post struct {
-	gorm.Model
-	Name        string `json:"Name" gorm:"type:varchar(255)"`
-	Description string `json:"Description"  gorm:"type:text"`
-	Tags        []Tag  // One-To-Many relationship (has many - use Tag's UserID as foreign key)
-}
+All API endpoints are versioned with `/api/v1` prefix.
 
-type Tag struct {
-	gorm.Model
-	PostID      uint   `gorm:"index"` // Foreign key (belongs to)
-	Name        string `json:"Name" gorm:"type:varchar(255)"`
-	Description string `json:"Description" gorm:"type:text"`
-}
-```
+### Authentication Endpoints
 
-## Filtering, Search and Pagination
-**UGin** has it's own filtering, search and pagination system. You just need to use these parameters.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/auth/signup` | Register a new user |
+| POST | `/api/v1/auth/signin` | Sign in and get JWT tokens |
+| POST | `/api/v1/auth/refresh` | Refresh access token |
+| POST | `/api/v1/auth/check` | Validate token |
 
-**Query parameters:**
-```
-/posts/?Limit=2
-/posts/?Offset=0
-/posts/?Sort=ID
-/posts/?Order=DESC
-/posts/?Search=hello
-```
+### Posts Endpoints (Public)
 
-Full: **http://localhost:8081/posts/?Limit=25&Offset=0&Sort=ID&Order=DESC&Search=hello**
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/posts` | Get all posts (supports pagination) |
+| GET | `/api/v1/posts/:id` | Get a single post by ID |
+| POST | `/api/v1/posts` | Create a new post |
+| PUT | `/api/v1/posts/:id` | Update an existing post |
+| DELETE | `/api/v1/posts/:id` | Delete a post |
 
-## Running
+### Posts Endpoints (JWT Protected)
 
-To run UGin with Docker, firstly build an image:
-```
-make build-image
-```
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/api/v1/postsjwt` | Get all posts | JWT |
+| GET | `/api/v1/postsjwt/:id` | Get a single post | JWT |
+| POST | `/api/v1/postsjwt` | Create a new post | JWT |
+| PUT | `/api/v1/postsjwt/:id` | Update a post | JWT |
+| DELETE | `/api/v1/postsjwt/:id` | Delete a post | JWT |
 
-To run Ugin with MySQL:
-```
-make run-app-mysql
-```
+### Admin Endpoints (Basic Auth)
 
-To run Ugin with PostgreSQL:
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/admin/dashboard` | Admin dashboard | Basic Auth |
+
+**Default credentials**: `username1:password1`, `username2:password2`, `username3:password3`
+
+### Query Parameters
+
+All list endpoints support advanced querying:
+
 ```
-make run-app-postgres
+GET /posts/?Limit=10&Offset=0&Sort=ID&Order=DESC&Search=keyword
 ```
 
-Application will be served at ":8081"
+| Parameter | Description | Example |
+|-----------|-------------|---------|
+| `Limit` | Number of records to return | `Limit=25` |
+| `Offset` | Number of records to skip | `Offset=0` |
+| `Sort` | Field to sort by | `Sort=ID` |
+| `Order` | Sort order (ASC/DESC) | `Order=DESC` |
+| `Search` | Search keyword | `Search=hello` |
 
-## Logging
-**UGin** has a very powerful logging logic. There is **application log (ugin.log)**, **database log (ugin.db.log)** and **access log (ugin.access.log)**
+### Example API Requests
 
-### ugin.log:
-```
-INFO 2021-09-19T00:33:32+03:00 Server is starting at 127.0.0.1:8081
-ERROR 2021-09-19T00:39:19+03:00 Failed to open log file ugin.log
-```
-### ugin.db.log:
-```
-2021/09/19 00:33:32 /home/user/projects/ugin/pkg/database/database.go:76
-[0.023ms] [rows:-] SELECT * FROM `posts` LIMIT 1
+#### Create a Post
 
-2021/09/19 00:33:32 /home/user/go/pkg/mod/gorm.io/driver/sqlite@v1.1.5/migrator.go:261
-[0.015ms] [rows:-] SELECT count(*) FROM sqlite_master WHERE type = "index" AND tbl_name = "posts" AND name = "idx_posts_deleted_at"
-
-2021/09/19 00:33:32 /home/user/go/pkg/mod/gorm.io/driver/sqlite@v1.1.5/migrator.go:32
-[0.010ms] [rows:-] SELECT count(*) FROM sqlite_master WHERE type='table' AND name="tags"
-
-2021/09/19 00:33:32 /home/user/projects/ugin/pkg/database/database.go:76
-[0.011ms] [rows:-] SELECT * FROM `tags` LIMIT 1
-```
-### ugin.access.log:
-```
-[GIN] 2021/09/19 - 00:33:43 | 200 |    9.255625ms |       127.0.0.1 | GET      "/posts/"
-[GIN] 2021/09/19 - 00:41:51 | 200 |     6.41675ms |       127.0.0.1 | GET      "/posts/4"
-```
-
-## Routes
-Default **UGin** routes are listed below. 
-
-| METHOD  | ROUTE            | FUNCTION                                                      |
-|---------|------------------|---------------------------------------------------------------|
-| GET     | /posts/          | github.com/yakuter/ugin/controller.(*Controller).GetPosts     |
-| GET     | /posts/:id       | github.com/yakuter/ugin/controller.(*Controller).GetPost      |
-| POST    | /posts/          | github.com/yakuter/ugin/controller.(*Controller).CreatePost   |
-| PUT     | /posts/:id       | github.com/yakuter/ugin/controller.(*Controller).UpdatePost   |
-| DELETE  | /posts/:id       | github.com/yakuter/ugin/controller.(*Controller).DeletePost   |
-| GET     | /postsjwt/       | github.com/yakuter/ugin/controller.(*Controller).GetPosts     |
-| GET     | /postsjwt/:id    | github.com/yakuter/ugin/controller.(*Controller).GetPost      |
-| POST    | /postsjwt/       | github.com/yakuter/ugin/controller.(*Controller).CreatePost   |
-| PUT     | /postsjwt/:id    | github.com/yakuter/ugin/controller.(*Controller).UpdatePost   |
-| DELETE  | /postsjwt/:id    | github.com/yakuter/ugin/controller.(*Controller).DeletePost   |
-| POST    | /auth/signup     | github.com/yakuter/ugin/controller.(*Controller).Signup       |
-| POST    | /auth/signin     | github.com/yakuter/ugin/controller.(*Controller).Signin       |
-| POST    | /auth/refresh    | github.com/yakuter/ugin/controller.(*Controller).RefreshToken |
-| POST    | /auth/check      | github.com/yakuter/ugin/controller.(*Controller).CheckToken   |
-| GET     | /admin/dashboard | github.com/yakuter/ugin/controller.Dashboard                  |
-
-## Gin Running Mode
-Gin framework listens **GIN_MODE** environment variable to set running mode. This mode enables/disables access log. Just run one of these commands before running **UGin**:
 ```bash
-// Debug mod
+curl -X POST http://localhost:8081/api/v1/posts \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Hello World",
+    "description": "This is a sample post",
+    "tags": [
+      {
+        "name": "golang",
+        "description": "Go programming language"
+      },
+      {
+        "name": "api",
+        "description": "REST API"
+      }
+    ]
+  }'
+```
+
+#### Get Posts with Pagination
+
+```bash
+curl "http://localhost:8081/api/v1/posts?Limit=10&Offset=0&Sort=id&Order=DESC"
+```
+
+#### Sign Up
+
+```bash
+curl -X POST http://localhost:8081/api/v1/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "master_password": "password123"
+  }'
+```
+
+#### Sign In
+
+```bash
+curl -X POST http://localhost:8081/api/v1/auth/signin \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "user@example.com",
+    "master_password": "password123"
+  }'
+```
+
+**Response:**
+```json
+{
+  "access_token": "eyJhbGc...",
+  "refresh_token": "eyJhbGc...",
+  "transmission_key": "...",
+  "access_token_expires_at": "2025-11-01T10:00:00Z",
+  "refresh_token_expires_at": "2025-11-02T10:00:00Z"
+}
+```
+
+#### Access Protected Endpoint
+
+```bash
+curl http://localhost:8081/api/v1/postsjwt \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+#### Refresh Token
+
+```bash
+curl -X POST http://localhost:8081/api/v1/auth/refresh \
+  -H "Content-Type: application/json" \
+  -d '{
+    "refresh_token": "YOUR_REFRESH_TOKEN"
+  }'
+```
+
+## 🗄️ Database
+
+### Domain Models
+
+UGin includes example domain models demonstrating relationships:
+
+**Post Model** (`internal/domain/post.go`):
+```go
+type Post struct {
+    ID          uint       `json:"id" gorm:"primarykey"`
+    CreatedAt   time.Time  `json:"created_at"`
+    UpdatedAt   time.Time  `json:"updated_at"`
+    DeletedAt   *time.Time `json:"deleted_at,omitempty" gorm:"index"`
+    Name        string     `json:"name" gorm:"type:varchar(255);not null"`
+    Description string     `json:"description" gorm:"type:text"`
+    Tags        []Tag      `json:"tags,omitempty" gorm:"foreignKey:PostID"`
+}
+```
+
+**Tag Model** (`internal/domain/post.go`):
+```go
+type Tag struct {
+    ID          uint       `json:"id" gorm:"primarykey"`
+    CreatedAt   time.Time  `json:"created_at"`
+    UpdatedAt   time.Time  `json:"updated_at"`
+    DeletedAt   *time.Time `json:"deleted_at,omitempty" gorm:"index"`
+    PostID      uint       `json:"post_id" gorm:"index;not null"`
+    Name        string     `json:"name" gorm:"type:varchar(255);not null"`
+    Description string     `json:"description" gorm:"type:text"`
+}
+```
+
+**User Model** (`internal/domain/user.go`):
+```go
+type User struct {
+    ID             uint       `json:"id" gorm:"primarykey"`
+    CreatedAt      time.Time  `json:"created_at"`
+    UpdatedAt      time.Time  `json:"updated_at"`
+    DeletedAt      *time.Time `json:"deleted_at,omitempty" gorm:"index"`
+    Email          string     `json:"email" gorm:"uniqueIndex;not null"`
+    MasterPassword string     `json:"-" gorm:"not null"` // Never exposed in JSON
+}
+```
+
+### Repository Pattern
+
+The application uses the Repository pattern for data access:
+
+```go
+// Repository interface (internal/repository/repository.go)
+type PostRepository interface {
+    GetByID(ctx context.Context, id string) (*domain.Post, error)
+    List(ctx context.Context, filter ListFilter) ([]*domain.Post, *ListResult, error)
+    Create(ctx context.Context, post *domain.Post) error
+    Update(ctx context.Context, post *domain.Post) error
+    Delete(ctx context.Context, id string) error
+}
+
+// GORM implementation (internal/repository/gormrepo/post.go)
+type postRepository struct {
+    db *gorm.DB
+}
+```
+
+### Migrations
+
+Migrations run automatically on application startup in `cmd/ugin/main.go`:
+
+```go
+func autoMigrate(db *gorm.DB) error {
+    return db.AutoMigrate(
+        &domain.Post{},
+        &domain.Tag{},
+        &domain.User{},
+    )
+}
+```
+
+## 🛡️ Middleware
+
+### Built-in Middleware
+
+1. **Logger** - Request logging (Gin)
+2. **Recovery** - Panic recovery (Gin)
+3. **CORS** - Cross-Origin Resource Sharing
+4. **Gzip** - Response compression
+5. **Security** - Security headers
+6. **Rate Limiting** - Request rate limiting (per IP)
+7. **JWT Auth** - Token validation
+
+### Using JWT Authentication
+
+The JWT middleware is applied to protected routes:
+
+```go
+// In main.go
+postsJWT := v1.Group("/postsjwt")
+postsJWT.Use(httpHandler.JWTAuth(authService))
+{
+    postsJWT.GET("", postHandler.List)
+    // ... other protected routes
+}
+```
+
+Protected endpoints require an `Authorization` header:
+```
+Authorization: Bearer YOUR_ACCESS_TOKEN
+```
+
+### Custom Middleware
+
+Add custom middleware in `internal/handler/http/middleware.go`:
+
+```go
+func CustomMiddleware() gin.HandlerFunc {
+    return func(c *gin.Context) {
+        // Your logic here
+        c.Next()
+    }
+}
+```
+
+Then register it in `cmd/ugin/main.go`:
+```go
+router.Use(httpHandler.CustomMiddleware())
+```
+
+## 🧪 Testing
+
+The new architecture makes testing easy with dependency injection and interfaces.
+
+### Running Tests
+
+```bash
+# Run all tests
+make test
+
+# Run tests with coverage
+make test-coverage
+
+# Run specific package tests
+go test -v ./internal/service/...
+```
+
+### Example Test
+
+Here's how to test a service with mocked dependencies (`internal/service/post_test.go`):
+
+```go
+func TestPostService_GetByID(t *testing.T) {
+    // Create mock repository
+    mockRepo := &mockPostRepository{
+        getByIDFunc: func(ctx context.Context, id string) (*domain.Post, error) {
+            return &domain.Post{
+                ID:          1,
+                Name:        "Test Post",
+                Description: "Test Description",
+            }, nil
+        },
+    }
+
+    // Create service with mock
+    svc := service.NewPostService(mockRepo, &mockLogger{})
+
+    // Test
+    post, err := svc.GetByID(context.Background(), "1")
+    if err != nil {
+        t.Errorf("unexpected error: %v", err)
+    }
+    if post.Name != "Test Post" {
+        t.Errorf("expected 'Test Post', got '%s'", post.Name)
+    }
+}
+```
+
+### Benefits of This Architecture
+
+✅ **Easy to Mock** - All dependencies are interfaces  
+✅ **Isolated Tests** - No global state to manage  
+✅ **Fast Tests** - No database required for service tests  
+✅ **Reliable** - Tests don't affect each other
+
+## 📝 Logging
+
+UGin provides three types of logs:
+
+### Application Log (`ugin.log`)
+General application events and errors:
+```
+INFO 2025-10-31T10:05:53+03:00 Server is starting at 127.0.0.1:8081
+ERROR 2025-10-31T10:06:15+03:00 Failed to connect to database
+```
+
+### Database Log (`ugin.db.log`)
+SQL queries and database operations:
+```
+2025/10/31 10:05:53 /Users/user/ugin/pkg/database/database.go:80
+[0.017ms] [rows:-] SELECT count(*) FROM sqlite_master WHERE type='table'
+```
+
+### Access Log (`ugin.access.log`)
+HTTP request logs:
+```
+[GIN] 2025/10/31 - 10:05:53 | 200 | 9.255625ms | 127.0.0.1 | GET "/posts/"
+```
+
+### Log Levels
+
+Configure log verbosity using the `GIN_MODE` environment variable:
+
+```bash
+# Development mode (verbose)
 export GIN_MODE=debug
-// Test mod
+
+# Test mode
 export GIN_MODE=test
-// Release mod
+
+# Production mode (minimal logging)
 export GIN_MODE=release
 ```
 
+## 🔧 Development
 
-## Packages
-**UGin** uses great open source projects list below: **Gin** for main framework, **Gorm** for database and **Viper** for configuration.
-```
-go get -u github.com/gin-gonic/gin
-go get -u github.com/jinzhu/gorm
-go get -u github.com/jinzhu/gorm/dialects/postgres
-go get -u github.com/jinzhu/gorm/dialects/sqlite
-go get -u github.com/jinzhu/gorm/dialects/mysql
-go get -u github.com/spf13/viper
-```
-## Middlewares
-### 1. Logger and Recovery Middlewares
-Gin has 2 important built-in middlewares: **Logger** and **Recovery**. UGin calls these two in default.
-```
-router := gin.Default()
+### Available Make Commands
+
+View all available commands:
+```bash
+make help
 ```
 
-This is same with the following lines.
-```
-router := gin.New()
-router.Use(gin.Logger())
-router.Use(gin.Recovery())
-```
+### Run in Development Mode
 
-### 2. CORS Middleware
-CORS is important for API's and UGin has it's own CORS middleware in **include/middleware.go**. CORS middleware is called with the code below.
-```
-router.Use(include.CORS())
-```
-There is also a good repo for this: https://github.com/gin-contrib/cors
+```bash
+# Set debug mode
+export GIN_MODE=debug
 
-### 3. BasicAuth Middleware
-Almost every API needs a protected area. Gin has **BasicAuth** middleware for protecting routes. Basic Auth is an authorization type that requires a verified username and password to access a data resource. In UGin, you can find an example for a basic auth. To access these protected routes, you need to add **Basic Authorization credentials** in your requests. If you try to reach these endpoints from browser, you should see a window prompting you for username and password.
+# Run directly (no build step)
+make run-dev
 
-```
-authorized := router.Group("/admin", gin.BasicAuth(gin.Accounts{
-    "username": "password",
-}))
-
-// /admin/dashboard endpoint is now protected
-authorized.GET("/dashboard", controller.Dashboard)
+# Or run with build
+make run
 ```
 
+### Build Commands
 
-## What is next?
-- Ugin needs a user service and an authentication method with JWT.
+```bash
+# Build for development
+make build
+
+# Build for production (optimized, smaller binary)
+make build-prod
+
+# The binary will be created in ./bin/ugin
+```
+
+### Testing
+
+```bash
+# Run all tests
+make test
+
+# Run tests with coverage report
+make test-coverage
+# This generates coverage.html that you can open in a browser
+```
+
+### Code Quality
+
+```bash
+# Format code
+make fmt
+
+# Run go vet
+make vet
+
+# Run linter (requires golangci-lint)
+make lint
+
+# Run all checks (format + vet + test)
+make check
+```
+
+### Dependency Management
+
+```bash
+# Download dependencies
+make deps
+
+# Update dependencies to latest versions
+make deps-update
+```
+
+### Clean Build Artifacts
+
+```bash
+# Remove binaries and log files
+make clean
+```
+
+## 🐳 Docker Support
+
+### Build Docker Image
+
+```bash
+make build-image
+```
+
+### Run with Docker Compose
+
+**With MySQL**:
+```bash
+# Start application with MySQL
+make run-app-mysql
+
+# Stop MySQL containers
+make clean-app-mysql
+```
+
+**With PostgreSQL**:
+```bash
+# Start application with PostgreSQL
+make run-app-postgres
+
+# Stop PostgreSQL containers
+make clean-app-postgres
+```
+
+### Manual Docker Commands
+
+```bash
+# Build image
+docker build -t ugin:latest -f containers/images/Dockerfile .
+
+# Run container
+docker run -p 8081:8081 -v $(pwd)/config.yml:/app/config.yml ugin:latest
+```
+
+## 📦 Dependencies
+
+Core dependencies:
+
+- [gin-gonic/gin](https://github.com/gin-gonic/gin) - HTTP web framework
+- [gorm.io/gorm](https://gorm.io/) - ORM library
+- [spf13/viper](https://github.com/spf13/viper) - Configuration management
+- [golang-jwt/jwt](https://github.com/golang-jwt/jwt) - JWT implementation
+- [sirupsen/logrus](https://github.com/sirupsen/logrus) - Structured logging
+- [didip/tollbooth](https://github.com/didip/tollbooth) - Rate limiting
+
+See `go.mod` for the complete list.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Gin](https://github.com/gin-gonic/gin) - Amazing HTTP web framework
+- [GORM](https://gorm.io/) - Fantastic ORM library
+- [Viper](https://github.com/spf13/viper) - Complete configuration solution
+
+## 📞 Support
+
+If you have any questions or need help, please open an issue on GitHub.
+
+---
+
+Made with ❤️ using Go

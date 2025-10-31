@@ -1,0 +1,97 @@
+package core
+
+import (
+	"github.com/gin-contrib/gzip"
+	"github.com/gin-gonic/gin"
+	"github.com/yakuter/ugin/internal/config"
+	httpHandler "github.com/yakuter/ugin/internal/handler/http"
+	"github.com/yakuter/ugin/internal/service"
+	"github.com/yakuter/ugin/pkg/logger"
+)
+
+// SetupRouter configures and returns the Gin router
+func SetupRouter(
+	cfg *config.Config,
+	postHandler *httpHandler.PostHandler,
+	authHandler *httpHandler.AuthHandler,
+	authService service.AuthService,
+	appLogger *logger.Logger,
+) *gin.Engine {
+	// Set Gin mode
+	setGinMode()
+
+	// Create router
+	router := gin.New()
+
+	// Setup access log
+	setupAccessLog(appLogger)
+	router.Use(gin.Logger())
+
+	// Global middleware
+	router.Use(gin.Recovery())
+	router.Use(httpHandler.CORS())
+	router.Use(gzip.Gzip(gzip.DefaultCompression))
+	router.Use(httpHandler.Security())
+	router.Use(httpHandler.RateLimit(cfg.Server.LimitCountPerRequest))
+
+	// API v1 routes
+	setupAPIv1Routes(router, postHandler, authHandler, authService)
+
+	// Admin routes
+	setupAdminRoutes(router)
+
+	return router
+}
+
+// setupAPIv1Routes sets up versioned API routes
+func setupAPIv1Routes(
+	router *gin.Engine,
+	postHandler *httpHandler.PostHandler,
+	authHandler *httpHandler.AuthHandler,
+	authService service.AuthService,
+) {
+	v1 := router.Group("/api/v1")
+	{
+		// Auth routes (public)
+		auth := v1.Group("/auth")
+		{
+			auth.POST("/signin", authHandler.SignIn)
+			auth.POST("/signup", authHandler.SignUp)
+			auth.POST("/refresh", authHandler.RefreshToken)
+			auth.POST("/check", authHandler.CheckToken)
+		}
+
+		// Post routes (public)
+		posts := v1.Group("/posts")
+		{
+			posts.GET("", postHandler.List)
+			posts.GET("/:id", postHandler.GetByID)
+			posts.POST("", postHandler.Create)
+			posts.PUT("/:id", postHandler.Update)
+			posts.DELETE("/:id", postHandler.Delete)
+		}
+
+		// Post routes (JWT protected)
+		postsJWT := v1.Group("/postsjwt")
+		postsJWT.Use(httpHandler.JWTAuth(authService))
+		{
+			postsJWT.GET("", postHandler.List)
+			postsJWT.GET("/:id", postHandler.GetByID)
+			postsJWT.POST("", postHandler.Create)
+			postsJWT.PUT("/:id", postHandler.Update)
+			postsJWT.DELETE("/:id", postHandler.Delete)
+		}
+	}
+}
+
+// setupAdminRoutes sets up admin routes with basic auth
+func setupAdminRoutes(router *gin.Engine) {
+	authorized := router.Group("/admin", gin.BasicAuth(gin.Accounts{
+		"username1": "password1",
+		"username2": "password2",
+		"username3": "password3",
+	}))
+	{
+		authorized.GET("/dashboard", httpHandler.Dashboard)
+	}
+}

@@ -1,15 +1,37 @@
-FROM golang:1.16-alpine
+# Build stage
+FROM golang:1.23-alpine AS builder
+
+# Install build dependencies
+RUN apk add --no-cache git gcc musl-dev
+
 WORKDIR /src
 
+# Copy go mod files
 COPY go.mod go.sum ./
 RUN go mod download
+
+# Copy source code
 COPY . .
 
-RUN CGO_ENABLED=0 go build -o /bin/app main.go
+# Build the application
+RUN CGO_ENABLED=1 go build -ldflags="-s -w" -o /bin/ugin ./cmd/ugin/main.go
 
-FROM alpine
-WORKDIR /src
+# Runtime stage
+FROM alpine:latest
 
-COPY --from=0 /bin/app /bin/app
+# Install ca-certificates for HTTPS requests
+RUN apk --no-cache add ca-certificates
 
-ENTRYPOINT ["/bin/app"]
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /bin/ugin /app/ugin
+
+# Copy config file
+COPY config.yml /app/config.yml
+
+# Expose port
+EXPOSE 8081
+
+# Run the application
+ENTRYPOINT ["/app/ugin"]
